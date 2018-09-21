@@ -2,8 +2,7 @@
 				 NO ES SKYRIM
 *************************************************/
 
-Desarrollado por: Más al sur que murcia studios
-
+	Desarrollado por: Más al sur que murcia studios
 	"No Es Skyrim" se trata de un videojuego en vista cenital, donde
 se combate contra oleadas de enemigos y se maneja la idea de cómo
 hubiera sido "The Elder Scroll V Skyrim" de haber salido para la Game
