@@ -2,6 +2,7 @@
 				 NO ES SKYRIM
 *************************************************/
 
+Desarrollado por: Más al sur que murcia studios
 
 	"No Es Skyrim" se trata de un videojuego en vista cenital, donde
 se combate contra oleadas de enemigos y se maneja la idea de cómo
@@ -17,8 +18,5 @@ esta se recarga con el tiempo.
 daño a todos los enemigos terrestres y bajar del cielo a los enemigos 
 voladores. Esta habilidad cuenta con cooldown.
 
-
-Desarrollado por:
-Más al sur que murcia studios
 
 	
