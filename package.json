@@ -1,0 +1,21 @@
+{
+  "version": "0.0.0",
+  "name": "awesome-game",
+  "author": "gituser",
+  "license": "CC-BY-NC-SA-4.0",
+  "repository": "gituser/awesome-game",
+  "dependencies": {
+    "browser-sync": "*",
+    "browserify": "*",
+    "del": "*",
+    "gulp": "*",
+    "gulp-connect": "*",
+    "gulp-gh-pages": "*",
+    "gulp-util": "*",
+    "http-server": "^0.11.1",
+    "merge-stream": "*",
+    "phaser": "2.6.0",
+    "vinyl-source-stream": "*",
+    "watchify": "*"
+  }
+}
