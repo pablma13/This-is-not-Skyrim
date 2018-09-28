@@ -1,8 +1,8 @@
-<h1 align="center">\\\NO ES SKYRIM///</h1>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/titulo.png"></img>
 
 
 <p align="center">=========================================================================</p>
-<h4 align="center">Desarrollado por: Más al sur que murcia studios</h4>
+<h4 align="center">Developed by: Más Al Sur Que Murcia Studios</h4>
 <p align="center">=========================================================================</p>
 
 
@@ -22,8 +22,8 @@
 <p align="justify">In addition, the player have the <b>Thu'um</b>💨, this allow do hurt to all land enemys and fall down all the flying enemys. This hability has cooldown🕐.</p>
 
 <h3>Dovahkiin<h3>
-
-
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Caminar%20Frente.gif" windth="100" height="100"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Caminar%20Espalda.gif" windth="100" height="100"></img>
 <h3>Enemigos - Enemys</h3>
 
 <h4>Voladores - Flying: </h4>
