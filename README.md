@@ -1,4 +1,4 @@
-<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Titulos-Arte/titulo.png"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Titulos-Arte/Wallpaper.png"></img>
 
 
 <p align="center">=========================================================================</p>
