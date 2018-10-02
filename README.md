@@ -54,3 +54,10 @@
 <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/TerAzulEspaldas2.gif" windth="100" height="100"></img>
 <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/TerAzulDerecha2.gif" windth="100" height="100"></img>
 <h3>Juego - Game</h3>
+
+<h3>Referencias - References: </h3>
+<p>-"The Elder Scroll V Skyrim"  </p>
+<p>-"The Legend of Zelda: Oracle of Seasons and Oracle of Ages" </p>
+<p>-"Dragon Warrior 3" </p>
+<p>-"Dragon ball z legendary super warriors"</p>
+<p>-"Boxhead"</p>
