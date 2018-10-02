@@ -1,4 +1,4 @@
-<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/titulo.png"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Titulos-Arte/titulo.png"></img>
 
 
 <p align="center">=========================================================================</p>
@@ -9,25 +9,48 @@
 <h3>ESP</h3>
 <p align="justify"> <i><b>No Es Skyrim</b></i> se trata de un videojuego en vista cenital, donde se combate contra oleadas de enemigos y se maneja la idea de cómo hubiera sido "The Elder Scroll V Skyrim" de haber salido para la Game Boy color.</p>
 
-<p align="justify">Para llevar a cabo esta misión el <b>Dovahkiin</b><img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Caminar%20Frente.gif" windth="30" height="30"></img> (El jugador) hará uso de sus recursos; <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/gitstamina.gif"  windth="20" height="20"></img>, <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/gitmana.gif"  windth="20" height="20"></img>. La <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/gitstamina.gif"  windth="20" height="20"></img> permite al jugador realizar ataques cuerpo a cuerpo y se recarga de forma periódica, el <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/gitmana.gif"  windth="20" height="20"></img> por su parte permite al jugador realizar ataques a distancia (util contra enemigos voladores) y restaurar su propia salud, al igual esta se recarga con el tiempo.</p>
+<p align="justify">Para llevar a cabo esta misión el <b>Dovahkiin</b><img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Dovah/DovahFrente/DovahFrente.gif" windth="35" height="35"></img> (El jugador) hará uso de sus recursos; <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Interfaz/Stamina/gitstamina.gif"  windth="20" height="20"></img>, <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Interfaz/Mana/gitmana.gif"  windth="20" height="20"></img>. La <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Interfaz/Stamina/gitstamina.gif"  windth="20" height="20"></img> permite al jugador realizar ataques cuerpo a cuerpo y se recarga de forma periódica, el <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Interfaz/Mana/gitmana.gif"  windth="20" height="20"></img> por su parte permite al jugador realizar ataques a distancia (util contra enemigos voladores) y restaurar su propia salud, al igual esta se recarga con el tiempo.</p>
 
-<p align="justify">Además, el jugador contará con el <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/gitthuum.gif"  windth="20" height="20"></img>, este le permitirá infinglir daño a todos los enemigos terrestres y bajar del cielo a los enemigos voladores. Esta habilidad cuenta con <b>cooldown</b>.</p>
+<p align="justify">Además, el jugador contará con el <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Interfaz/Thu'um/gitthuum.gif"  windth="20" height="20"></img>, este le permitirá infinglir daño a todos los enemigos terrestres y bajar del cielo a los enemigos voladores. Esta habilidad cuenta con <b>cooldown</b>.</p>
 
 
 <h3>ENG</h3>
 <p align="justify"> <i><b>No Es Skyrim</b></i> is a zhenital view video game where the player will battle against different enemy waves through levels while he try to get the higher score possible. The idea is to remake "The Elder Scroll V Skyrim" just like it would be a Game Boy Color game.</p>
 
-<p align="justify">For do this <b>Dovahkiin</b><img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Caminar%20Frente.gif" windth="30" height="30"></img> (Player) will have to uses her resources; <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/gitstamina.gif"  windth="20" height="20"></img>, <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/gitmana.gif"  windth="20" height="20"></img>. The <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/gitstamina.gif"  windth="20" height="20"></img> allow the player do close-combat moves and this recharge periodically, <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/gitmana.gif"  windth="20" height="20"></img> allow the player do distence-combat moves (very useful versus flying enemys) and cure himself, like the other resource this recharge periodically.</p>
+<p align="justify">For do this <b>Dovahkiin</b><img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Dovah/DovahFrente/DovahFrente.gif" windth="35" height="35"></img> (Player) will have to uses her resources; <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Interfaz/Stamina/gitstamina.gif"  windth="20" height="20"></img>, <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Interfaz/Mana/gitmana.gif"  windth="20" height="20"></img>. The <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Interfaz/Stamina/gitstamina.gif"  windth="20" height="20"></img> allow the player do close-combat moves and this recharge periodically, <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Interfaz/Mana/gitmana.gif"  windth="20" height="20"></img> allow the player do distence-combat moves (very useful versus flying enemys) and cure himself, like the other resource this recharge periodically.</p>
 
-<p align="justify">In addition, the player have the <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/gitthuum.gif"  windth="20" height="20"></img>, this allow do hurt to all land enemys and fall down all the flying enemys. This hability has <b>cooldown</b>.</p>
+<p align="justify">In addition, the player have the <img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Interfaz/Thu'um/gitthuum.gif"  windth="20" height="20"></img>, this allow do hurt to all land enemys and fall down all the flying enemys. This hability has <b>cooldown</b>.</p>
 
 <h3>Dovahkiin<h3>
-<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Caminar%20Frente.gif" windth="100" height="100"></img>
-<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Caminar%20Espalda.gif" windth="100" height="100"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Dovah/DovahIzq/DovahIzq.gif" windth="100" height="100"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Dovah/DovahFrente/DovahFrente.gif" windth="110" height="110"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Dovah/DovahEspalda/DovahEspalda.gif" windth="100" height="100"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Dovah/DovahDrch/DovahDrch.gif" windth="100" height="100"></img>
 <h3>Enemigos - Enemys</h3>
 
-<h4>Voladores - Flying: </h4>
-<h4>Terrestres - Land: </h4>
+<h4>Voladores - Flying: <h4>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/VolAmarilloIquierda.gif" windth="100" height="100"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/VolAmarilloFrente.gif" windth="100" height="100"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/VolAmarilloEspaldas.gif" windth="100" height="100"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/VolAmarilloDerecha.gif" windth="100" height="100"></img>
 
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/VolBlancoIzquierda.gif" windth="100" height="100"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/VolBlancoFrente.gif" windth="100" height="100"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/VolBlancoEspaldas.gif" windth="100" height="100"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/VolBlancoDerecha.gif" windth="100" height="100"></img>
+<h4>Terrestres - Land: <h4>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/TerAmarilloIquierda.gif" windth="100" height="100"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/TerAmarilloFrente.gif" windth="100" height="100"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/TerAmarilloEspaldas.gif" windth="100" height="100"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/TerAmarilloDerecha.gif" windth="100" height="100"></img>
 
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/TerAzulIzquierda.gif" windth="100" height="100"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/TerAzulFrente.gif" windth="100" height="100"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/TerAzulEspaldas.gif" windth="100" height="100"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/TerAzulDerecha.gif" windth="100" height="100"></img>
+
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/TerAzulIzquierda2.gif" windth="100" height="100"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/TerAzulFrente2.gif" windth="100" height="100"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/TerAzulEspaldas2.gif" windth="100" height="100"></img>
+<img src="https://github.com/pablma13/This-is-not-Skyrim/blob/master/sprites/Enemigos/TerAzulDerecha2.gif" windth="100" height="100"></img>
 <h3>Juego - Game</h3>
