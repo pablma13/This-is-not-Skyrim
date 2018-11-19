@@ -21,7 +21,7 @@ var ghpages = require('gulp-gh-pages');
 //
 
 var bundler = browserify([
-  './src/js/main.js'
+  './src/js/SceneManager.js'
 ]);
 
 var bundle = function ()  {
