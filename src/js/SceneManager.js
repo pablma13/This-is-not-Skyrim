@@ -63,6 +63,15 @@ var magic_Button;
         layer.resizeWorld();
 
     },
+    update: function()
+    {
+        prota_Texture.body.velocity.set(0);
+        if(cursor.left.isDown) prota.move(3);
+        else if(cursor.right.isDown) prota.move(4);
+        else if(cursor.up.isDown) prota.move(1);
+        else if(cursor.down.isDown) prota.move(2);
+        else prota.stop();
+    } 
     };
 
 window.onload = function () {
