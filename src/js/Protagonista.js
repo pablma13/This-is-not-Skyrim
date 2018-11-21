@@ -18,6 +18,12 @@ module.exports = class Dovah{
         this.dovah.animations.add('Down', [2,3], 5, true);
         this.dovah.animations.add('Up', [0,1], 5, true);
         this.game.physics.enable(this.dovah, Phaser.Physics.ARCADE)
+
+        this.meele.animations.add('attack', [1,2,3,4,5], 7, true);
+        this.game.physics.enable(this.meele, Phaser.Physics.ARCADE)
+
+        this.magic.animations.add('magic', [0,1,2,3,4,5], 5, true);
+        this.game.physics.enable(this.magic, Phaser.Physics.ARCADE)
     }
 
     X (){ return this.dovah_X; }
@@ -25,7 +31,7 @@ module.exports = class Dovah{
 
     //draw(){ game.add.sprite( this.dovah_X , this.dovah_Y, 'Prota');}
 
-    move() 
+    move(dir) 
     { //Mover jugador
         switch (dir)
         {
@@ -53,9 +59,73 @@ module.exports = class Dovah{
 
     attack_Meele()
     {
+        switch (this.dovah_dir)
+        {
+            case 1:
+            this.meele.scale.x = 1;
+            this.meele.x = this.dovah.x - 5;
+            this.meele.y = this.dovah.y - 15;
+            this.meele.angle = -40;
+            break;
+            case 2:
+            this.meele.scale.x = 1;
+            this.meele.x = this.dovah.x + 75;
+            this.meele.y = this.dovah.y + 65;
+            this.meele.angle = 130;
+            break;
+            case 3:
+            this.meele.scale.x = -1;
+            this.meele.x = this.dovah.x - 15;
+            this.meele.y = this.dovah.y + 5;
+            this.meele.angle = -65;
+            break;
+            case 4:
+            this.meele.scale.x = 1;
+            this.meele.x = this.dovah.x + 95;
+            this.meele.y = this.dovah.y + 5;
+            this.meele.angle = 65;
+            break;
+        }
+        this.meele.play('attack');
     }
-
     attack_Magic()
     {
+        switch (this.dovah_dir)
+        {
+            case 1:
+            this.magic.scale.x = 2;
+            this.magic.x = this.dovah.x + 65;
+            this.magic.y = this.dovah.y;
+            this.magic.angle = 180;
+            this.magic.body.velocity.y = -250;
+            this.magic.body.velocity.x = 0;
+            break;
+            case 2:
+            this.magic.scale.x = 2;
+            this.magic.x = this.dovah.x + 15;
+            this.magic.y = this.dovah.y + 65;
+            this.magic.angle = 0;
+            this.magic.body.velocity.y = 250;
+            this.magic.body.velocity.x = 0;
+            break;
+            case 3:
+            this.magic.scale.x = -2;
+            this.magic.x = this.dovah.x + 15;
+            this.magic.y = this.dovah.y + 65;
+            this.magic.angle = 90;
+            this.magic.body.velocity.y = 0;
+            this.magic.body.velocity.x = -250;
+            break;
+            case 4:
+            this.magic.scale.x = 2;
+            this.magic.x = this.dovah.x + 65;
+            this.magic.y = this.dovah.y + 65;
+            this.magic.angle = -90;
+            this.magic.body.velocity.y = 0;
+            this.magic.body.velocity.x = 250;
+            break;
+        }
+        this.magic.play('magic');
     }
+stop_Meele(){/*this.meele.animations.stop();*/}
 }

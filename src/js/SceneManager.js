@@ -53,10 +53,21 @@ var magic_Button;
         layer = map.createLayer(0);
 
         prota_Texture = this.game.add.sprite( 100 , 100, 'Dovah');
+        prota_Texture.smoothed = false;
+        prota_Texture.scale.set(1.25);
         meele_Texture = this.game.add.sprite( -100 , -100, 'Meele');
+        meele_Texture.smoothed = false;
+        meele_Texture.scale.set(1.25);
         magic_Texture = this.game.add.sprite( -100 , -100, 'Magic');
+        magic_Texture.smoothed = false;
+        magic_Texture.scale.set(2);
         prota = new dovah(prota_Texture,meele_Texture,magic_Texture, this.game);
+        this.game.camera.follow(prota_Texture);
+        //this.game.physics.enable(prota_Texture, Phaser.Physics.ARCADE)
 
+        //prota_Texture.smoothed = false;
+
+        //prota_Texture.scale.set(1.25);
         layer.smoothed = false;
         layer.scale.set(5);
 
@@ -71,6 +82,11 @@ var magic_Button;
         else if(cursor.up.isDown) prota.move(1);
         else if(cursor.down.isDown) prota.move(2);
         else prota.stop();
+
+        if(meele_Button.isDown) prota.attack_Meele();
+        else prota.stop_Meele();
+
+        if(magic_Button.isDown) prota.attack_Magic();
     } 
     };
 
