@@ -10,6 +10,8 @@ var magic_Texture;
 var cursor;
 var meele_Button;
 var magic_Button;
+var magic_Interface;
+var stamina_Interface;
 
     var BootScene = {
         preload: function () {
@@ -18,13 +20,34 @@ var magic_Button;
         meele_Button = this.game.input.keyboard.addKey(Phaser.Keyboard.Z);
         magic_Button = this.game.input.keyboard.addKey(Phaser.Keyboard.X);
         this.game.load.image('preloader_bar', 'images/preloader_bar.png');
+        this.game.load.image('Tittle', 'images/Titulos-Arte/titulo.png');
+        this.game.load.image('Play', 'images/Titulos-Arte/PLAY.png');
+        this.game.load.image('Decoración','images/Titulos-Arte/Decoración.png');
+        this.game.load.audio('Menu_Music', 'audio/Skyrim-8-Bit-Theme.ogg');
+        this.game.load.audio('Game_Music', 'audio/08 - Overworld.ogg');
         },
     
         create: function () {
-        this.game.state.start('preloader');
+        this.game.state.start('menu');
         }
     };
-
+    var Menu = {
+        preload: function (){
+            this.music_menu = this.game.add.audio('Menu_Music');
+            this.game.add.image(0, 0, 'Tittle');
+            this.game.add.image(370, 250, 'Decoración');
+            this.play = this.game.add.button(-90, 150, 'Play', Play, this, 2, 1, 0);
+            this.play.input.useHandCursor = true;
+            this.play.smoothed = false;
+            this.play.scale.set(0.75);
+            this.music_menu.play();
+        }
+    } 
+    function Play()
+    {
+        this.music_menu.stop();
+        this.game.state.start('preloader');
+    }
     var PreloaderScene = {
         preload: function () {
 
@@ -35,6 +58,8 @@ var magic_Button;
         // TODO: load here the assets for the game
         this.game.load.tilemap('map1', 'images/map.csv');
         this.game.load.image('tileset', 'images/0x72_16x16DungeonTileset.v3.png');
+        this.game.load.spritesheet('Magic_Interface','images/interfaz/Mana/Mana.png',32,32);
+        this.game.load.spritesheet('Stamina_Interface','images/interfaz/Stamina/Stamina.png',32,32);
         this.game.load.spritesheet('Dovah', 'images/Dovah/SpriteDovah.png', 62, 60);
         this.game.load.spritesheet('Magic', 'images/Dovah/Magic/Magic.png', 30, 30);
         this.game.load.spritesheet('Meele', 'images/Dovah/Meele/Attack.png', 55, 42);
@@ -52,6 +77,9 @@ var magic_Button;
 
         layer = map.createLayer(0);
 
+        this.music_game = this.game.add.audio('Game_Music');
+        this.music_game.play();
+
         prota_Texture = this.game.add.sprite( 100 , 100, 'Dovah');
         prota_Texture.smoothed = false;
         prota_Texture.scale.set(1.25);
@@ -63,11 +91,15 @@ var magic_Button;
         magic_Texture.scale.set(2);
         prota = new dovah(prota_Texture,meele_Texture,magic_Texture, this.game);
         this.game.camera.follow(prota_Texture);
-        //this.game.physics.enable(prota_Texture, Phaser.Physics.ARCADE)
-
-        //prota_Texture.smoothed = false;
-
-        //prota_Texture.scale.set(1.25);
+        
+        magic_Interface = this.game.add.sprite(40, 490, 'Magic_Interface');
+        magic_Interface.smoothed = false;
+        magic_Interface.scale.set(5);
+        magic_Interface.fixedToCamera = true;
+        stamina_Interface = this.game.add.sprite(600, 490,'Stamina_Interface');
+        stamina_Interface.smoothed = false;
+        stamina_Interface.scale.set(5);
+        stamina_Interface.fixedToCamera = true;
         layer.smoothed = false;
         layer.scale.set(5);
 
@@ -94,6 +126,7 @@ window.onload = function () {
     var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');
   
     game.state.add('boot', BootScene);
+    game.state.add('menu', Menu);
     game.state.add('preloader', PreloaderScene);
     game.state.add('play', PlayScene);
   

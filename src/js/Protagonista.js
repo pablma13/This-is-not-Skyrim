@@ -97,7 +97,7 @@ module.exports = class Dovah{
             this.magic.x = this.dovah.x + 65;
             this.magic.y = this.dovah.y;
             this.magic.angle = 180;
-            this.magic.body.velocity.y = -250;
+            this.magic.body.velocity.y = -300;
             this.magic.body.velocity.x = 0;
             break;
             case 2:
@@ -105,7 +105,7 @@ module.exports = class Dovah{
             this.magic.x = this.dovah.x + 15;
             this.magic.y = this.dovah.y + 65;
             this.magic.angle = 0;
-            this.magic.body.velocity.y = 250;
+            this.magic.body.velocity.y = 300;
             this.magic.body.velocity.x = 0;
             break;
             case 3:
@@ -114,7 +114,7 @@ module.exports = class Dovah{
             this.magic.y = this.dovah.y + 65;
             this.magic.angle = 90;
             this.magic.body.velocity.y = 0;
-            this.magic.body.velocity.x = -250;
+            this.magic.body.velocity.x = -300;
             break;
             case 4:
             this.magic.scale.x = 2;
@@ -122,7 +122,7 @@ module.exports = class Dovah{
             this.magic.y = this.dovah.y + 65;
             this.magic.angle = -90;
             this.magic.body.velocity.y = 0;
-            this.magic.body.velocity.x = 250;
+            this.magic.body.velocity.x = 300;
             break;
         }
         this.magic.play('magic');
