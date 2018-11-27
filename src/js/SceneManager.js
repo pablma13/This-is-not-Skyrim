@@ -56,8 +56,8 @@ var stamina_Interface;
         this.load.setPreloadSprite(this.loadingBar);
     
         // TODO: load here the assets for the game
-        this.game.load.tilemap('map1', 'images/Mapa3.json',null,Phaser.Tilemap.TILED_JSON);
-        this.game.load.image('tileset', 'images/PVLI3.tsx');
+        this.game.load.tilemap('map1', 'images/map.csv');
+        this.game.load.image('tileset', 'images/0x72_16x16DungeonTileset.v3.png');
         this.game.load.spritesheet('Magic_Interface','images/interfaz/Mana/Mana.png',32,32);
         this.game.load.spritesheet('Stamina_Interface','images/interfaz/Stamina/Stamina.png',32,32);
         this.game.load.spritesheet('Dovah', 'images/Dovah/SpriteDovah.png', 62, 60);
@@ -71,15 +71,11 @@ var stamina_Interface;
 
     var PlayScene = {
     preload: function () {
-        game.physics.startSystem(Phaser.Physics.ARCADE);
         map = this.game.add.tilemap('map1',16,16);
 
         map.addTilesetImage('tileset');
 
-        layer = map.createLayer("Suelo");
-        layer1 = map.createLayer("Muros");
-
-        map.setCollisionBetween(1,10000,true,layer1);
+        layer = map.createLayer(0);
 
         this.music_game = this.game.add.audio('Game_Music');
         this.music_game.play();
@@ -94,14 +90,15 @@ var stamina_Interface;
         magic_Texture.smoothed = false;
         magic_Texture.scale.set(2);
         prota = new dovah(prota_Texture,meele_Texture,magic_Texture, this.game);
-        game.physics.arcade.enable(prota);
         this.game.camera.follow(prota_Texture);
         
         magic_Interface = this.game.add.sprite(40, 490, 'Magic_Interface');
+        this.m = 1;
         magic_Interface.smoothed = false;
         magic_Interface.scale.set(5);
         magic_Interface.fixedToCamera = true;
         stamina_Interface = this.game.add.sprite(600, 490,'Stamina_Interface');
+        this.s = 1;
         stamina_Interface.smoothed = false;
         stamina_Interface.scale.set(5);
         stamina_Interface.fixedToCamera = true;
@@ -113,20 +110,32 @@ var stamina_Interface;
     },
     update: function()
     {
-        game.physics.arcade.collide(layer1,prota);
+        magic_Button.onDown.add(magic, this);
+        magic_Interface.animations.add('Use_Magic', [this.m], 5, true);
+        meele_Button.onDown.add(stamina, this);
+        stamina_Interface.animations.add('Use_Stamina', [this.s], 5, true);
         prota_Texture.body.velocity.set(0);
         if(cursor.left.isDown) prota.move(3);
         else if(cursor.right.isDown) prota.move(4);
         else if(cursor.up.isDown) prota.move(1);
         else if(cursor.down.isDown) prota.move(2);
         else prota.stop();
-
-        if(meele_Button.isDown) prota.attack_Meele();
-        else prota.stop_Meele();
-
-        if(magic_Button.isDown) prota.attack_Magic();
     } 
     };
+
+    function stamina ()
+    {
+        prota.attack_Meele();
+        stamina_Interface.play('Use_Stamina');
+        this.s++;
+    }
+
+    function magic ()
+    {
+        prota.attack_Magic();
+        magic_Interface.play('Use_Magic');
+        this.m++;
+    }
 
 window.onload = function () {
     var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');
