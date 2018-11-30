@@ -1,5 +1,7 @@
 'use strict';
 
+var magic_Create =  require ('./Proyectil.js');
+
 module.exports = class Dovah{
     constructor(texture_Dova, texture_Meele, texture_Magic, game)
     {
@@ -93,39 +95,18 @@ module.exports = class Dovah{
         switch (this.dovah_dir)
         {
             case 1:
-            this.magic.scale.x = 2;
-            this.magic.x = this.dovah.x + 65;
-            this.magic.y = this.dovah.y;
-            this.magic.angle = 180;
-            this.magic.body.velocity.y = -300;
-            this.magic.body.velocity.x = 0;
+            magic_Create(this.magic, (this.dovah.x + 65), this.dovah.y, 180, 0, -300, 2);
             break;
             case 2:
-            this.magic.scale.x = 2;
-            this.magic.x = this.dovah.x + 15;
-            this.magic.y = this.dovah.y + 65;
-            this.magic.angle = 0;
-            this.magic.body.velocity.y = 300;
-            this.magic.body.velocity.x = 0;
+            magic_Create(this.magic, (this.dovah.x + 15), (this.dovah.y + 65), 0, 0, 300, 2);
             break;
             case 3:
-            this.magic.scale.x = -2;
-            this.magic.x = this.dovah.x + 15;
-            this.magic.y = this.dovah.y + 65;
-            this.magic.angle = 90;
-            this.magic.body.velocity.y = 0;
-            this.magic.body.velocity.x = -300;
+            magic_Create(this.magic, (this.dovah.x + 15), (this.dovah.y + 65), 90, 300, 0, -2);
             break;
             case 4:
-            this.magic.scale.x = 2;
-            this.magic.x = this.dovah.x + 65;
-            this.magic.y = this.dovah.y + 65;
-            this.magic.angle = -90;
-            this.magic.body.velocity.y = 0;
-            this.magic.body.velocity.x = 300;
+            magic_Create(this.magic, (this.dovah.x + 65), (this.dovah.y + 65), -90, 300, 0, 2);
             break;
         }
-        this.magic.play('magic');
     }
 stop_Meele(){/*this.meele.animations.stop();*/}
 }
