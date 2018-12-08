@@ -55,6 +55,8 @@ var stamina_Interface;
         this.loadingBar.anchor.setTo(0, 0.5);
         this.load.setPreloadSprite(this.loadingBar);
     
+        this.game.physics.startSystem(Phaser.Physics.ARCADE);
+
         // TODO: load here the assets for the game
         this.game.load.tilemap('map1', 'images/map.csv');
         this.game.load.image('tileset', 'images/0x72_16x16DungeonTileset.v3.png');
@@ -86,10 +88,23 @@ var stamina_Interface;
         meele_Texture = this.game.add.sprite( -100 , -100, 'Meele');
         meele_Texture.smoothed = false;
         meele_Texture.scale.set(1.25);
-        magic_Texture = this.game.add.sprite( -100 , -100, 'Magic');
-        magic_Texture.smoothed = false;
-        magic_Texture.scale.set(2);
-        prota = new dovah(prota_Texture,meele_Texture,magic_Texture, this.game);
+       // magic_Texture = this.game.add.sprite( -100 , -100, 'Magic');
+       // magic_Texture.smoothed = false;
+      //  magic_Texture.scale.set(2);
+        this.magic_Group = this.game.add.group();
+        this.magic_Group.enableBody = true;
+        this.magic_Group.physicsBodyType = Phaser.Physics.ARCADE;
+        for (var i = 0; i < 20; i++)
+        {
+            var b = this.magic_Group.create(0, 0, 'Magic');
+            b.name = 'Magic' + i;
+            b.exists = false;
+            b.visible = false;
+            b.scale.y = 2;
+        }
+        this.magic_Group.callAll('animations.add', 'animations', 'bullet', [0, 1, 2, 3, 4, 5], 5, true);
+        this.magic_Group.callAll('animations.play', 'animations', 'bullet');
+        prota = new dovah(prota_Texture,meele_Texture,this.magic_Group, this.game);
         this.game.camera.follow(prota_Texture);
         
         magic_Interface = this.game.add.sprite(40, 490, 'Magic_Interface');
@@ -106,7 +121,6 @@ var stamina_Interface;
         layer.scale.set(5);
 
         layer.resizeWorld();
-
     },
     update: function()
     {
