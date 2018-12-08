@@ -1,6 +1,7 @@
 'use strict';
 
 var magic_Create =  require ('./Proyectil.js');
+var magic_Cast;
 
 module.exports = class Dovah{
     constructor(texture_Dova, texture_Meele, texture_Magic, game)
@@ -26,6 +27,18 @@ module.exports = class Dovah{
 
         this.magic.animations.add('magic', [0,1,2,3,4,5], 5, true);
         this.game.physics.enable(this.magic, Phaser.Physics.ARCADE)
+        this.magic_Group = this.game.add.group();
+        this.magic_Group.enableBody = true;
+        this.magic_Groups.physicsBodyType = Phaser.Physics.ARCADE;
+        for (var i = 0; i < 20; i++)
+        {
+            var b = this.magic_Group.create(0, 0, 'magic');
+            b.name = 'magic' + i;
+            b.exists = false;
+            b.visible = false;
+            //b.checkWorldBounds = true;
+           // b.events.onOutOfBounds.add(resetBullet, this);
+        }
     }
 
     X (){ return this.dovah_X; }
@@ -95,16 +108,16 @@ module.exports = class Dovah{
         switch (this.dovah_dir)
         {
             case 1:
-            magic_Create(this.magic, (this.dovah.x + 65), this.dovah.y, 180, 0, -300, 2);
+            magic_Create(this.magic, (this.dovah.x + 65), this.dovah.y, 180, 0, -300, 2, this.magic_Group);
             break;
             case 2:
-            magic_Create(this.magic, (this.dovah.x + 15), (this.dovah.y + 65), 0, 0, 300, 2);
+            magic_Create(this.magic, (this.dovah.x + 15), (this.dovah.y + 65), 0, 0, 300, 2, this.magic_Group);
             break;
             case 3:
-            magic_Create(this.magic, (this.dovah.x + 15), (this.dovah.y + 65), 90, 300, 0, -2);
+            magic_Create(this.magic, (this.dovah.x + 15), (this.dovah.y + 65), 90, 300, 0, -2, this.magic_Group);
             break;
             case 4:
-            magic_Create(this.magic, (this.dovah.x + 65), (this.dovah.y + 65), -90, 300, 0, 2);
+            magic_Create(this.magic, (this.dovah.x + 65), (this.dovah.y + 65), -90, 300, 0, 2, this.magic_Group);
             break;
         }
     }
