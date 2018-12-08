@@ -85,12 +85,22 @@ var stamina_Interface;
         prota_Texture = this.game.add.sprite( 100 , 100, 'Dovah');
         prota_Texture.smoothed = false;
         prota_Texture.scale.set(1.25);
-        meele_Texture = this.game.add.sprite( -100 , -100, 'Meele');
-        meele_Texture.smoothed = false;
-        meele_Texture.scale.set(1.25);
-       // magic_Texture = this.game.add.sprite( -100 , -100, 'Magic');
-       // magic_Texture.smoothed = false;
-      //  magic_Texture.scale.set(2);
+
+        this.meele_Group = this.game.add.group();
+        this.meele_Group.enableBody = true;
+        this.meele_Group.physicsBodyType = Phaser.Physics.ARCADE;
+        for (var i = 0; i < 20; i++)
+        {
+            var m = this.meele_Group.create(0, 0, 'Meele');
+            m.name = 'Meele' + i;
+            m.exists = false;
+            m.visible = false;
+            m.smoothed = false;
+            m.scale.set(1.25);
+        }
+        this.meele_Group.callAll('animations.add', 'animations', 'attack', [1,2,3,4,5], 7, true);
+        this.meele_Group.callAll('animations.play', 'animations', 'attack');
+
         this.magic_Group = this.game.add.group();
         this.magic_Group.enableBody = true;
         this.magic_Group.physicsBodyType = Phaser.Physics.ARCADE;
@@ -104,7 +114,8 @@ var stamina_Interface;
         }
         this.magic_Group.callAll('animations.add', 'animations', 'bullet', [0, 1, 2, 3, 4, 5], 5, true);
         this.magic_Group.callAll('animations.play', 'animations', 'bullet');
-        prota = new dovah(prota_Texture,meele_Texture,this.magic_Group, this.game);
+
+        prota = new dovah(prota_Texture, this.meele_Group, this.magic_Group, this.game);
         this.game.camera.follow(prota_Texture);
         
         magic_Interface = this.game.add.sprite(40, 490, 'Magic_Interface');
