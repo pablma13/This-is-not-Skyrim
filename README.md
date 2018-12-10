@@ -1,4 +1,4 @@
-<img src="/src/images/Titulos-Arte/titulo_Web.png"></img>
+<img src="/src/images/Titulos-Arte/Wallpaper.png" align="center"></img>
 
 
 <p align="center">=========================================================================</p>
