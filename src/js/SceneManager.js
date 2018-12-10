@@ -2,6 +2,7 @@
 
 var map;
 var layer;
+const gameManager = require ('./GameManager.js');
 var dovah = require ('./Protagonista.js');
 var prota;
 var prota_Texture;
@@ -40,7 +41,7 @@ var stamina_Interface;
             this.play.input.useHandCursor = true;
             this.play.smoothed = false;
             this.play.scale.set(0.75);
-            this.music_menu.play();
+           // this.music_menu.play();
         }
     } 
     function Play()
@@ -58,7 +59,7 @@ var stamina_Interface;
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
         // TODO: load here the assets for the game
-        this.game.load.tilemap('map1', 'images/map.csv');
+        this.game.load.tilemap('map1', 'images/map.csv', null, Phaser.Tilemap.CSV);
         this.game.load.image('tileset', 'images/0x72_16x16DungeonTileset.v3.png');
         this.game.load.spritesheet('Magic_Interface','images/interfaz/Mana/Mana.png',32,32);
         this.game.load.spritesheet('Stamina_Interface','images/interfaz/Stamina/Stamina.png',32,32);
@@ -73,18 +74,25 @@ var stamina_Interface;
 
     var PlayScene = {
     preload: function () {
+
+      //  this.game.camera.scale.setTo(4);
+
         map = this.game.add.tilemap('map1',16,16);
 
         map.addTilesetImage('tileset');
 
+      //  map.setCollision([1,1000]);
+
         layer = map.createLayer(0);
 
         this.music_game = this.game.add.audio('Game_Music');
-        this.music_game.play();
+       // this.music_game.play();
 
-        prota_Texture = this.game.add.sprite( 100 , 100, 'Dovah');
+        prota_Texture = this.game.add.sprite( 10 , 50, 'Dovah');
         prota_Texture.smoothed = false;
         prota_Texture.scale.set(1.25);
+        this.game.physics.enable(prota_Texture, Phaser.Physics.ARCADE);
+       // prota_Texture.body.setSize(30, 30, 2, 1);
 
         this.meele_Group = this.game.add.group();
         this.meele_Group.enableBody = true;
@@ -135,6 +143,9 @@ var stamina_Interface;
     },
     update: function()
     {
+     //   this.game.physics.arcade.collide(prota_Texture, layer, d);
+        if(gameManager.Stamina() > 0)this.s = Math.abs(gameManager.Stamina() - 10);
+        if(gameManager.Magic() > 0)this.m = Math.abs(gameManager.Magic() - 10);
         magic_Button.onDown.add(magic, this);
         magic_Interface.animations.add('Use_Magic', [this.m], 5, true);
         meele_Button.onDown.add(stamina, this);
@@ -147,19 +158,21 @@ var stamina_Interface;
         else prota.stop();
     } 
     };
-
+    function d()
+    {
+        console.log("ss");
+        prota_Texture.body.velocity.set(0);
+    }
     function stamina ()
     {
         prota.attack_Meele();
         stamina_Interface.play('Use_Stamina');
-        this.s++;
     }
 
     function magic ()
     {
         prota.attack_Magic();
         magic_Interface.play('Use_Magic');
-        this.m++;
     }
 
 window.onload = function () {

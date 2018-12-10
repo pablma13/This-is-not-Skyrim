@@ -1,5 +1,5 @@
 'use strict';
-
+const gameManager = require ('./GameManager.js');
 var magic_Create =  require ('./Proyectil.js');
 var magic_Cast;
 
@@ -7,11 +7,6 @@ module.exports = class Dovah{
     constructor(texture_Dova, group_Meele, group_Magic, game)
     {
         this.dovah_dir = 1;
-
-        this.magic_X;
-        this.magic_Y;
-        this.meele_X;
-        this.meele_Y;
 
         this.dovah = texture_Dova;
         this.meele = group_Meele;
@@ -63,53 +58,60 @@ module.exports = class Dovah{
     attack_Meele()
     {
         var attack = this.meele.getFirstExists(false);
-        if (attack)
+        if (attack && gameManager.Stamina() > 0)
+        {
+            if (attack)
+            {
+                switch (this.dovah_dir)
+                {
+                    case 1:
+                    attack.reset(this.dovah.x - 5 , this.dovah.y - 15);
+                    attack.scale.x = 1;
+                    attack.angle = -40;
+                    break;
+                    case 2:
+                    attack.reset(this.dovah.x + 75 , this.dovah.y + 65);
+                    attack.scale.x = 1;
+                    attack.angle = 130;
+                    break;
+                    case 3:
+                    attack.reset(this.dovah.x - 15 , this.dovah.y + 5);
+                    attack.scale.x = -1;
+                    attack.angle = -65;
+                    break;
+                    case 4:
+                    attack.reset(this.dovah.x + 95 , this.dovah.y + 5);
+                    attack.scale.x = 1;
+                    attack.angle = 65;
+                    break;
+                }
+                gameManager.Use_Stamina(1);
+                this.timer.add(450, stop, this);
+                this.timer.start();
+                function stop() { attack.kill(); }
+            }
+        }
+    }
+    attack_Magic()
+    {
+        if(gameManager.Magic() > 0)
         {
             switch (this.dovah_dir)
             {
                 case 1:
-                attack.reset(this.dovah.x - 5 , this.dovah.y - 15);
-                attack.scale.x = 1;
-                attack.angle = -40;
+                magic_Create(this.game, (this.dovah.x + 65), this.dovah.y, 180, 0, -300, 2, this.magic);
                 break;
                 case 2:
-                attack.reset(this.dovah.x + 75 , this.dovah.y + 65);
-                attack.scale.x = 1;
-                attack.angle = 130;
+                magic_Create(this.game, (this.dovah.x + 15), (this.dovah.y + 65), 0, 0, 300, 2, this.magic);
                 break;
                 case 3:
-                attack.reset(this.dovah.x - 15 , this.dovah.y + 5);
-                attack.scale.x = -1;
-                attack.angle = -65;
+                magic_Create(this.game, (this.dovah.x + 15), (this.dovah.y + 65), 90, -300, 0, -2, this.magic);
                 break;
                 case 4:
-                attack.reset(this.dovah.x + 95 , this.dovah.y + 5);
-                attack.scale.x = 1;
-                attack.angle = 65;
+                magic_Create(this.game, (this.dovah.x + 65), (this.dovah.y + 65), -90, 300, 0, 2, this.magic);
                 break;
             }
-        }
-      //  this.meele.play('attack');
-        this.timer.add(450, stop, this);
-        this.timer.start();
-        function stop() { attack.kill(); }
-    }
-    attack_Magic()
-    {
-        switch (this.dovah_dir)
-        {
-            case 1:
-            magic_Create(this.game, (this.dovah.x + 65), this.dovah.y, 180, 0, -300, 2, this.magic);
-            break;
-            case 2:
-            magic_Create(this.game, (this.dovah.x + 15), (this.dovah.y + 65), 0, 0, 300, 2, this.magic);
-            break;
-            case 3:
-            magic_Create(this.game, (this.dovah.x + 15), (this.dovah.y + 65), 90, -300, 0, -2, this.magic);
-            break;
-            case 4:
-            magic_Create(this.game, (this.dovah.x + 65), (this.dovah.y + 65), -90, 300, 0, 2, this.magic);
-            break;
+            gameManager.Use_Magic(1);
         }
     }
 }
