@@ -7,7 +7,7 @@ module.exports = class Dovah{
     constructor(texture_Dova, group_Meele, group_Magic, game)
     {
         this.dovah_dir = 1;
-
+        this.Talos_Please_Help_Me = false;
         this.dovah = texture_Dova;
         this.meele = group_Meele;
         this.magic = group_Magic;
@@ -136,10 +136,18 @@ module.exports = class Dovah{
 
     hit()
     {
-        if(gameManager.Life() > 0)
+        console.log(gameManager.Life());
+        if(!this.Talos_Please_Help_Me)
         {
-            gameManager.Use_Life(1);
+            if(gameManager.Life() > 0)
+            {
+                gameManager.Use_Life(1);
+                this.Talos_Please_Help_Me = true;
+                this.timer.add(500, All_God_Things_Ends, this);
+                this.timer.start();
+            }
+            else this.dovah.kill();
+            function All_God_Things_Ends() { this.Talos_Please_Help_Me = false; }
         }
-        else this.dovah.kill();
     }
 }

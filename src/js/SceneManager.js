@@ -14,6 +14,7 @@ var meele_Button;
 var magic_Button;
 var magic_Interface;
 var stamina_Interface;
+var health_Interface;
 
     var BootScene = {
         preload: function () {
@@ -62,6 +63,7 @@ var stamina_Interface;
         // TODO: load here the assets for the game
         this.game.load.tilemap('map1', 'images/map.csv', null, Phaser.Tilemap.CSV);
         this.game.load.image('tileset', 'images/0x72_16x16DungeonTileset.v3.png');
+        this.game.load.spritesheet('Health_Interface','images/interfaz/Vida/Vida.png',32,32);
         this.game.load.spritesheet('Magic_Interface','images/interfaz/Mana/Mana.png',32,32);
         this.game.load.spritesheet('Stamina_Interface','images/interfaz/Stamina/Stamina.png',32,32);
         this.game.load.spritesheet('Dovah', 'images/Dovah/SpriteDovah.png', 62, 60);
@@ -96,7 +98,7 @@ var stamina_Interface;
         {
             this.enemies.push(new enemy(i, this.enemy_Texture, this.game));
         }
-        prota_Texture = this.game.add.sprite( 10 , 50, 'Dovah');
+        prota_Texture = this.game.add.sprite( 100 , 500, 'Dovah');
         prota_Texture.smoothed = false;
         prota_Texture.scale.set(1.25);
         this.game.physics.enable(prota_Texture, Phaser.Physics.ARCADE);
@@ -136,6 +138,11 @@ var stamina_Interface;
         prota = new dovah(prota_Texture, this.meele_Group, this.magic_Group, this.game);
         this.game.camera.follow(prota_Texture);
         
+        health_Interface = this.game.add.sprite(320, 490, 'Health_Interface');
+        this.h = 1;
+        health_Interface.smoothed = false;
+        health_Interface.scale.set(5);
+        health_Interface.fixedToCamera = true;
         magic_Interface = this.game.add.sprite(40, 490, 'Magic_Interface');
         this.m = 1;
         magic_Interface.smoothed = false;
@@ -156,10 +163,12 @@ var stamina_Interface;
      //   this.game.physics.arcade.collide(prota_Texture, layer, d);
         if(gameManager.Stamina() > 0)this.s = Math.abs(gameManager.Stamina() - 10);
         if(gameManager.Magic() > 0)this.m = Math.abs(gameManager.Magic() - 10);
+        if(gameManager.Life() > 0)this.h = Math.abs(gameManager.Life() - 10);
         magic_Button.onDown.add(magic, this);
         magic_Interface.animations.add('Use_Magic', [this.m], 5, true);
         meele_Button.onDown.add(stamina, this);
         stamina_Interface.animations.add('Use_Stamina', [this.s], 5, true);
+        health_Interface.animations.add('Use_Health', [this.h], 5, true);
         prota_Texture.body.velocity.set(0);
         if(cursor.left.isDown) prota.move(3);
         else if(cursor.right.isDown) prota.move(4);
@@ -195,10 +204,11 @@ var stamina_Interface;
         prota.attack_Magic();
         magic_Interface.play('Use_Magic');
     }
+
     function enemy_Hit ()
     {
-        console.log("ss");
-       // console.log("ss");
+        prota.hit();
+        health_Interface.play('Use_Health');
     }
     function meele_Hit ()
     {
