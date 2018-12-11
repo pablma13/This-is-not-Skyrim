@@ -4,6 +4,7 @@ var map;
 var layer;
 const gameManager = require ('./GameManager.js');
 var dovah = require ('./Protagonista.js');
+var enemy = require ('./Enemigo.js');
 var prota;
 var prota_Texture;
 var meele_Texture;
@@ -66,6 +67,7 @@ var stamina_Interface;
         this.game.load.spritesheet('Dovah', 'images/Dovah/SpriteDovah.png', 62, 60);
         this.game.load.spritesheet('Magic', 'images/Dovah/Magic/Magic.png', 30, 30);
         this.game.load.spritesheet('Meele', 'images/Dovah/Meele/Attack.png', 55, 42);
+        this.enemy_Texture = this.game.load.spritesheet('Enemy_Ter_Yellow', 'images/Enemigos/TerAmarillo.png',60,60);
         },
         create: function () {
             this.game.state.start('play');
@@ -87,11 +89,18 @@ var stamina_Interface;
 
         this.music_game = this.game.add.audio('Game_Music');
        // this.music_game.play();
-
+        this.enemies = [];
+        this.enemiesTotal = 10;
+        this.enemiesAlive = 10;
+        for (var i = 0; i < this.enemiesTotal; i++)
+        {
+            this.enemies.push(new enemy(i, this.enemy_Texture, this.game));
+        }
         prota_Texture = this.game.add.sprite( 10 , 50, 'Dovah');
         prota_Texture.smoothed = false;
         prota_Texture.scale.set(1.25);
         this.game.physics.enable(prota_Texture, Phaser.Physics.ARCADE);
+        prota_Texture.body.collideWorldBounds = true;
        // prota_Texture.body.setSize(30, 30, 2, 1);
 
         this.meele_Group = this.game.add.group();
@@ -118,6 +127,7 @@ var stamina_Interface;
             b.name = 'Magic' + i;
             b.exists = false;
             b.visible = false;
+            b.smoothed = false;
             b.scale.y = 2;
         }
         this.magic_Group.callAll('animations.add', 'animations', 'bullet', [0, 1, 2, 3, 4, 5], 5, true);
@@ -156,11 +166,22 @@ var stamina_Interface;
         else if(cursor.up.isDown) prota.move(1);
         else if(cursor.down.isDown) prota.move(2);
         else prota.stop();
+        for (var i = 0; i < this.enemies.length; i++)
+        {
+            if (this.enemies[i].alive)
+            {
+                this.actual_Enemy = this.enemies[i];
+                this.enemiesAlive++;
+                this.game.physics.arcade.collide(prota.dovah, this.enemies[i].enemy, enemy_Hit, null, this);
+                this.game.physics.arcade.collide(prota.attack, this.enemies[i].enemy, meele_Hit, null, this);
+                this.game.physics.arcade.collide(prota.bullet, this.enemies[i].enemy, magic_Hit, null, this);
+                this.enemies[i].update(prota_Texture);
+            }
+        }
     } 
     };
     function d()
     {
-        console.log("ss");
         prota_Texture.body.velocity.set(0);
     }
     function stamina ()
@@ -174,7 +195,21 @@ var stamina_Interface;
         prota.attack_Magic();
         magic_Interface.play('Use_Magic');
     }
-
+    function enemy_Hit ()
+    {
+        console.log("ss");
+       // console.log("ss");
+    }
+    function meele_Hit ()
+    {
+      //  meele.kill();
+      this.actual_Enemy.hit(2);
+    }
+    function magic_Hit ()
+    {
+        prota.bullet.kill();
+        this.actual_Enemy.hit(1);
+    }
 window.onload = function () {
     var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');
   
