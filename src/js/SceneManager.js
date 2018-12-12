@@ -14,9 +14,11 @@ var magic_Texture;
 var cursor;
 var meele_Button;
 var magic_Button;
+var thuum_Button;
 var magic_Interface;
 var stamina_Interface;
 var health_Interface;
+var thuum_Interface;
 var util = true;
 
     var BootScene = {
@@ -25,6 +27,7 @@ var util = true;
         cursor = this.game.input.keyboard.createCursorKeys();
         meele_Button = this.game.input.keyboard.addKey(Phaser.Keyboard.Z);
         magic_Button = this.game.input.keyboard.addKey(Phaser.Keyboard.X);
+        thuum_Button = this.game.input.keyboard.addKey(Phaser.Keyboard.C);
         this.game.load.image('preloader_bar', 'images/preloader_bar.png');
         this.game.load.image('Tittle', 'images/Titulos-Arte/titulo.png');
         this.game.load.image('Play', 'images/Titulos-Arte/PLAY.png');
@@ -46,7 +49,7 @@ var util = true;
             this.play.input.useHandCursor = true;
             this.play.smoothed = false;
             this.play.scale.set(0.75);
-           // this.music_menu.play();
+            this.music_menu.play();
         }
     } 
     function Play()
@@ -68,6 +71,8 @@ var util = true;
         this.game.load.image('tileset', 'images/0x72_16x16DungeonTileset.v3.png');
         this.game.load.image('GameOver', 'images/interfaz/Títulos/GameOver.png');
         this.game.load.image('RoundClear', 'images/interfaz/Títulos/Round_Clear.png');
+        this.game.load.spritesheet('Thu-um_Screen', 'images/interfaz/Thu-um/thuum_screen.png', 800, 569);
+        this.game.load.spritesheet('Thu-um_Interface','images/interfaz/Thu-um/thu-um.png',32,32);
         this.game.load.spritesheet('Health_Interface','images/interfaz/Vida/Vida.png',32,32);
         this.game.load.spritesheet('Magic_Interface','images/interfaz/Mana/Mana.png',32,32);
         this.game.load.spritesheet('Stamina_Interface','images/interfaz/Stamina/Stamina.png',32,32);
@@ -95,7 +100,7 @@ var util = true;
         layer = map.createLayer(0);
 
         this.music_game = this.game.add.audio('Game_Music');
-       // this.music_game.play();
+        this.music_game.play();
 
        //next_Round();
        this.enemies = [];
@@ -103,7 +108,7 @@ var util = true;
        this.enemiesAlive = ronda[ronda_Actual];
        for (var i = 0; i < this.enemiesTotal; i++)
        {
-           this.enemies.push(new enemy(i, this.enemy_Texture, this.game));
+           this.enemies[i] =new enemy(i, this.enemy_Texture, this.game);
        }
 
         prota_Texture = this.game.add.sprite( 100 , 500, 'Dovah');
@@ -146,6 +151,15 @@ var util = true;
         prota = new dovah(prota_Texture, this.meele_Group, this.magic_Group, this.game);
         this.game.camera.follow(prota_Texture);
         
+        this.thuum_Screen = this.game.add.sprite(0, 0, 'Thu-um_Screen');
+        this.thuum_Screen.visible = false;
+        this.thuum_Screen.fixedToCamera = true;
+        this.thuum_Screen.animations.add('FUSH_RO_DAH', [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22], 7, true);
+        thuum_Interface = this.game.add.sprite(320, -60, 'Thu-um_Interface');
+        this.t = 5;
+        thuum_Interface.smoothed = false;
+        thuum_Interface.scale.set(5);
+        thuum_Interface.fixedToCamera = true;
         health_Interface = this.game.add.sprite(320, 490, 'Health_Interface');
         this.h = 1;
         health_Interface.smoothed = false;
@@ -179,11 +193,15 @@ var util = true;
         if(gameManager.Stamina() > 0)this.s = Math.abs(gameManager.Stamina() - 10);
         if(gameManager.Magic() > 0)this.m = Math.abs(gameManager.Magic() - 10);
         if(gameManager.Life() > 0)this.h = Math.abs(gameManager.Life() - 10);
+        if(gameManager.Thuum() > 2)this.t = Math.abs(gameManager.Thuum() - 10);
         magic_Button.onDown.add(magic, this);
         magic_Interface.animations.add('Use_Magic', [this.m], 5, true);
         meele_Button.onDown.add(stamina, this);
         stamina_Interface.animations.add('Use_Stamina', [this.s], 5, true);
         health_Interface.animations.add('Use_Health', [this.h], 5, true);
+        thuum_Button.onDown.add(thuum, this);
+        thuum_Interface.animations.add('Use_thuum', [this.t], 5, true);
+        thuum_Interface.play('Use_thuum');
         prota_Texture.body.velocity.set(0);
         if(cursor.left.isDown) prota.move(3);
         else if(cursor.right.isDown) prota.move(4);
@@ -208,16 +226,16 @@ var util = true;
         if(this.enemiesAlive <= 0)
         {
             this.timer.add(1000, next, this);
-            this.timer.start();
             this.round_Clear.visible = true;
             ronda_Actual++;
-                this.enemiesTotal = ronda[ronda_Actual];
-                this.enemiesAlive = ronda[ronda_Actual];
-                for (var i = 0; i < this.enemiesTotal; i++)
-                {
-                    this.enemies[i] = new enemy(i, this.enemy_Texture, this.game);
-                }
-                function next() { this.round_Clear.visible = false; }
+            this.enemiesTotal = ronda[ronda_Actual];
+            this.enemiesAlive = ronda[ronda_Actual];
+            for (var i = 0; i < this.enemiesTotal; i++)
+            {
+                 this.enemies[i] = new enemy(i, this.enemy_Texture, this.game);
+            }
+            this.timer.start();
+            function next() { this.round_Clear.visible = false; }
             
         }// next_Round();
     } 
@@ -247,7 +265,26 @@ var util = true;
         prota.attack_Magic();
         magic_Interface.play('Use_Magic');
     }
-
+    function thuum()
+    {
+        if(gameManager.Thuum() <= 2)
+        {
+            this.timer.add(3000, stop, this);
+            this.thuum_Screen.visible = true;
+            this.thuum_Screen.play('FUSH_RO_DAH');
+            for (var i = 0; i < this.enemies.length; i++)
+            {
+                this.enemies[i].hit(2);
+            }
+            gameManager.Use_Thuum();
+            this.timer.start();
+            function stop()
+            {
+                this.thuum_Screen.visible = false;
+                this.thuum_Screen.animations.stop();
+            }
+        }
+    }
     function enemy_Hit ()
     {
         prota.hit();
@@ -262,7 +299,7 @@ var util = true;
     function magic_Hit ()
     {
         prota.bullet.kill();
-        this.actual_Enemy.hit(1);
+        this.actual_Enemy.hit(2);
     }
 window.onload = function () {
     var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');

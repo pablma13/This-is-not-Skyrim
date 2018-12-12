@@ -15,7 +15,8 @@ module.exports = class Dovah{
         this.game = game;
 
         this.timer = this.game.time.create(false);
-
+        this.game.time.events.loop(1000, thuum, this);
+        function thuum () { gameManager.Recover_Thumm(); }
         this.dovah.animations.add('Left', [6,7], 5, true);
         this.dovah.animations.add('Right', [4,5], 5, true);
         this.dovah.animations.add('Down', [2,3], 5, true);
@@ -130,7 +131,7 @@ module.exports = class Dovah{
                     break;
             }
         }
-            gameManager.Use_Magic(1);
+            gameManager.Use_Magic(2);
         }
     }
 
