@@ -5,6 +5,8 @@ var layer;
 const gameManager = require ('./GameManager.js');
 var dovah = require ('./Protagonista.js');
 var enemy = require ('./Enemigo.js');
+var ronda = [3,5,8,9,11];
+var ronda_Actual = 0;
 var prota;
 var prota_Texture;
 var meele_Texture;
@@ -15,6 +17,7 @@ var magic_Button;
 var magic_Interface;
 var stamina_Interface;
 var health_Interface;
+var util = true;
 
     var BootScene = {
         preload: function () {
@@ -63,6 +66,8 @@ var health_Interface;
         // TODO: load here the assets for the game
         this.game.load.tilemap('map1', 'images/map.csv', null, Phaser.Tilemap.CSV);
         this.game.load.image('tileset', 'images/0x72_16x16DungeonTileset.v3.png');
+        this.game.load.image('GameOver', 'images/interfaz/Títulos/GameOver.png');
+        this.game.load.image('RoundClear', 'images/interfaz/Títulos/Round_Clear.png');
         this.game.load.spritesheet('Health_Interface','images/interfaz/Vida/Vida.png',32,32);
         this.game.load.spritesheet('Magic_Interface','images/interfaz/Mana/Mana.png',32,32);
         this.game.load.spritesheet('Stamina_Interface','images/interfaz/Stamina/Stamina.png',32,32);
@@ -78,7 +83,7 @@ var health_Interface;
 
     var PlayScene = {
     preload: function () {
-
+        this.timer = this.game.time.create(false);
       //  this.game.camera.scale.setTo(4);
 
         map = this.game.add.tilemap('map1',16,16);
@@ -91,13 +96,16 @@ var health_Interface;
 
         this.music_game = this.game.add.audio('Game_Music');
        // this.music_game.play();
-        this.enemies = [];
-        this.enemiesTotal = 10;
-        this.enemiesAlive = 10;
-        for (var i = 0; i < this.enemiesTotal; i++)
-        {
-            this.enemies.push(new enemy(i, this.enemy_Texture, this.game));
-        }
+
+       //next_Round();
+       this.enemies = [];
+       this.enemiesTotal = ronda[ronda_Actual];
+       this.enemiesAlive = ronda[ronda_Actual];
+       for (var i = 0; i < this.enemiesTotal; i++)
+       {
+           this.enemies.push(new enemy(i, this.enemy_Texture, this.game));
+       }
+
         prota_Texture = this.game.add.sprite( 100 , 500, 'Dovah');
         prota_Texture.smoothed = false;
         prota_Texture.scale.set(1.25);
@@ -156,6 +164,13 @@ var health_Interface;
         layer.smoothed = false;
         layer.scale.set(5);
 
+        this.GameOver = this.game.add.sprite( 0 , 0, 'GameOver');
+        this.GameOver.visible = false;
+        this.GameOver.fixedToCamera = true;
+        this.round_Clear = this.game.add.sprite(0, 0, 'RoundClear');
+        this.round_Clear.visible = false;
+        this.round_Clear.fixedToCamera = true;
+
         layer.resizeWorld();
     },
     update: function()
@@ -177,8 +192,10 @@ var health_Interface;
         else prota.stop();
         for (var i = 0; i < this.enemies.length; i++)
         {
+            if(util)this.enemiesAlive = 0;
             if (this.enemies[i].alive)
             {
+                util = false;
                 this.actual_Enemy = this.enemies[i];
                 this.enemiesAlive++;
                 this.game.physics.arcade.collide(prota.dovah, this.enemies[i].enemy, enemy_Hit, null, this);
@@ -187,12 +204,38 @@ var health_Interface;
                 this.enemies[i].update(prota_Texture);
             }
         }
+        util = true;
+        if(this.enemiesAlive <= 0)
+        {
+            this.timer.add(1000, next, this);
+            this.timer.start();
+            this.round_Clear.visible = true;
+            ronda_Actual++;
+                this.enemiesTotal = ronda[ronda_Actual];
+                this.enemiesAlive = ronda[ronda_Actual];
+                for (var i = 0; i < this.enemiesTotal; i++)
+                {
+                    this.enemies[i] = new enemy(i, this.enemy_Texture, this.game);
+                }
+                function next() { this.round_Clear.visible = false; }
+            
+        }// next_Round();
     } 
     };
     function d()
     {
         prota_Texture.body.velocity.set(0);
     }
+  /*  function next_Round()
+    {
+        this.enemies = [];
+        this.enemiesTotal = ronda[ronda_Actual];
+        this.enemiesAlive = ronda_Actual;
+        for (var i = 0; i < this.enemiesTotal; i++)
+        {
+            this.enemies.push(new enemy(i, this.enemy_Texture, this.game));
+        }
+    }*/
     function stamina ()
     {
         prota.attack_Meele();
@@ -209,6 +252,7 @@ var health_Interface;
     {
         prota.hit();
         health_Interface.play('Use_Health');
+        if(gameManager.Life() <= 0) this.GameOver.visible = true;
     }
     function meele_Hit ()
     {

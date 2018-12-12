@@ -136,7 +136,6 @@ module.exports = class Dovah{
 
     hit()
     {
-        console.log(gameManager.Life());
         if(!this.Talos_Please_Help_Me)
         {
             if(gameManager.Life() > 0)
