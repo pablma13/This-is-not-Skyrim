@@ -134,7 +134,6 @@ module.exports = class Dovah{
             gameManager.Use_Magic(2);
         }
     }
-
     hit()
     {
         if(!this.Talos_Please_Help_Me)

@@ -8,7 +8,7 @@
     "browser-sync": "*",
     "browserify": "*",
     "del": "*",
-    "gulp": "*",
+    "gulp": "^3.9.1",
     "gulp-connect": "*",
     "gulp-gh-pages": "*",
     "gulp-util": "*",

@@ -5,7 +5,7 @@ var layer;
 const gameManager = require ('./GameManager.js');
 var dovah = require ('./Protagonista.js');
 var enemy = require ('./Enemigo.js');
-var ronda = [3,5,8,9,11];
+var ronda = [2,5,8,9,11];
 var ronda_Actual = 0;
 var prota;
 var prota_Texture;
@@ -33,7 +33,7 @@ var util = true;
         this.game.load.image('Play', 'images/Titulos-Arte/PLAY.png');
         this.game.load.image('Decoración','images/Titulos-Arte/Decoración.png');
         this.game.load.audio('Menu_Music', 'audio/Skyrim-8-Bit-Theme.ogg');
-        this.game.load.audio('Game_Music', 'audio/08 - Overworld.ogg');
+        this.game.load.audio('Game_Music', 'audio/14 - Barbarian King.ogg');
         },
     
         create: function () {
@@ -67,8 +67,9 @@ var util = true;
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
         // TODO: load here the assets for the game
-        this.game.load.tilemap('map1', 'images/map.csv', null, Phaser.Tilemap.CSV);
-        this.game.load.image('tileset', 'images/0x72_16x16DungeonTileset.v3.png');
+        this.game.load.tilemap('map1', 'images/tundra.csv', null, Phaser.Tilemap.TILED_CSV);
+        this.game.load.image('tileset', 'images/tileset.png');
+        this.game.load.spritesheet('snow', 'images/snow.png', 240, 180);
         this.game.load.image('GameOver', 'images/interfaz/Títulos/GameOver.png');
         this.game.load.image('RoundClear', 'images/interfaz/Títulos/Round_Clear.png');
         this.game.load.spritesheet('Thu-um_Screen', 'images/interfaz/Thu-um/thuum_screen.png', 800, 569);
@@ -79,7 +80,7 @@ var util = true;
         this.game.load.spritesheet('Dovah', 'images/Dovah/SpriteDovah.png', 62, 60);
         this.game.load.spritesheet('Magic', 'images/Dovah/Magic/Magic.png', 30, 30);
         this.game.load.spritesheet('Meele', 'images/Dovah/Meele/Attack.png', 55, 42);
-        this.enemy_Texture = this.game.load.spritesheet('Enemy_Ter_Yellow', 'images/Enemigos/TerAmarillo.png',60,60);
+        this.enemy_Texture = this.game.load.spritesheet('Dragon_Ter', 'images/Enemigos/Ter.png',60,60);
         },
         create: function () {
             this.game.state.start('play');
@@ -91,11 +92,11 @@ var util = true;
         this.timer = this.game.time.create(false);
       //  this.game.camera.scale.setTo(4);
 
-        map = this.game.add.tilemap('map1',16,16);
+        map = this.game.add.tilemap('map1',64,64);
 
         map.addTilesetImage('tileset');
 
-      //  map.setCollision([1,1000]);
+        map.setCollision([358, 359 , 360, 361, 374, 375, ]);
 
         layer = map.createLayer(0);
 
@@ -111,13 +112,18 @@ var util = true;
            this.enemies[i] =new enemy(i, this.enemy_Texture, this.game);
        }
 
-        prota_Texture = this.game.add.sprite( 100 , 500, 'Dovah');
+        prota_Texture = this.game.add.sprite( 200 , 500, 'Dovah');
         prota_Texture.smoothed = false;
         prota_Texture.scale.set(1.25);
         this.game.physics.enable(prota_Texture, Phaser.Physics.ARCADE);
         prota_Texture.body.collideWorldBounds = true;
-       // prota_Texture.body.setSize(30, 30, 2, 1);
-
+        prota_Texture.body.setSize(40, 10, 10, 45);
+       this.snow = this.game.add.sprite(0, 0, 'snow');
+       this.snow.visible = true;
+       this.snow.scale.set(3.33);
+       this.snow.fixedToCamera = true;
+       this.snow.animations.add('snowing');
+       this.snow.animations.play('snowing', 5, true);
         this.meele_Group = this.game.add.group();
         this.meele_Group.enableBody = true;
         this.meele_Group.physicsBodyType = Phaser.Physics.ARCADE;
@@ -153,8 +159,9 @@ var util = true;
         
         this.thuum_Screen = this.game.add.sprite(0, 0, 'Thu-um_Screen');
         this.thuum_Screen.visible = false;
+        this.thuum_Screen.scale.set(1.05);
         this.thuum_Screen.fixedToCamera = true;
-        this.thuum_Screen.animations.add('FUSH_RO_DAH', [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22], 7, true);
+        this.thuum_Screen.animations.add('FUSH_RO_DAH', [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21], 7, true);
         thuum_Interface = this.game.add.sprite(320, -60, 'Thu-um_Interface');
         this.t = 5;
         thuum_Interface.smoothed = false;
@@ -176,7 +183,7 @@ var util = true;
         stamina_Interface.scale.set(5);
         stamina_Interface.fixedToCamera = true;
         layer.smoothed = false;
-        layer.scale.set(5);
+        //layer.scale.set(3);
 
         this.GameOver = this.game.add.sprite( 0 , 0, 'GameOver');
         this.GameOver.visible = false;
@@ -184,12 +191,11 @@ var util = true;
         this.round_Clear = this.game.add.sprite(0, 0, 'RoundClear');
         this.round_Clear.visible = false;
         this.round_Clear.fixedToCamera = true;
-
         layer.resizeWorld();
     },
     update: function()
     {
-     //   this.game.physics.arcade.collide(prota_Texture, layer, d);
+        this.game.physics.arcade.collide(prota_Texture, layer);
         if(gameManager.Stamina() > 0)this.s = Math.abs(gameManager.Stamina() - 10);
         if(gameManager.Magic() > 0)this.m = Math.abs(gameManager.Magic() - 10);
         if(gameManager.Life() > 0)this.h = Math.abs(gameManager.Life() - 10);
@@ -274,7 +280,7 @@ var util = true;
             this.thuum_Screen.play('FUSH_RO_DAH');
             for (var i = 0; i < this.enemies.length; i++)
             {
-                this.enemies[i].hit(2);
+                this.enemies[i].relax();
             }
             gameManager.Use_Thuum();
             this.timer.start();
@@ -282,6 +288,16 @@ var util = true;
             {
                 this.thuum_Screen.visible = false;
                 this.thuum_Screen.animations.stop();
+                this.timer.add(1000, kill, this);
+                this.timer.start();
+                this.game.camera.shake(0.025, 1000);
+                function kill()
+                {
+                    for (var i = 0; i < this.enemies.length; i++)
+                    {
+                        this.enemies[i].hit(999);
+                    }
+                }
             }
         }
     }
