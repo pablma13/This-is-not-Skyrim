@@ -49,7 +49,7 @@ var util = true;
             this.play.input.useHandCursor = true;
             this.play.smoothed = false;
             this.play.scale.set(0.75);
-            this.music_menu.play();
+          //  this.music_menu.play();
         }
     } 
     function Play()
@@ -80,7 +80,7 @@ var util = true;
         this.game.load.spritesheet('Dovah', 'images/Dovah/SpriteDovah.png', 62, 60);
         this.game.load.spritesheet('Magic', 'images/Dovah/Magic/Magic.png', 30, 30);
         this.game.load.spritesheet('Meele', 'images/Dovah/Meele/Attack.png', 55, 42);
-        this.enemy_Texture = this.game.load.spritesheet('Dragon_Ter', 'images/Enemigos/Ter.png',60,60);
+        this.enemy_Texture = this.game.load.spritesheet('Dragon', 'images/Enemigos/Enemigos.png',60,60);
         },
         create: function () {
             this.game.state.start('play');
@@ -101,7 +101,7 @@ var util = true;
         layer = map.createLayer(0);
 
         this.music_game = this.game.add.audio('Game_Music');
-        this.music_game.play();
+      //  this.music_game.play();
 
        //next_Round();
        this.enemies = [];
@@ -114,16 +114,15 @@ var util = true;
 
         prota_Texture = this.game.add.sprite( 200 , 500, 'Dovah');
         prota_Texture.smoothed = false;
-        prota_Texture.scale.set(1.25);
         this.game.physics.enable(prota_Texture, Phaser.Physics.ARCADE);
         prota_Texture.body.collideWorldBounds = true;
         prota_Texture.body.setSize(40, 10, 10, 45);
-       this.snow = this.game.add.sprite(0, 0, 'snow');
-       this.snow.visible = true;
-       this.snow.scale.set(3.33);
-       this.snow.fixedToCamera = true;
-       this.snow.animations.add('snowing');
-       this.snow.animations.play('snowing', 5, true);
+        this.snow = this.game.add.sprite(0, 0, 'snow');
+        this.snow.visible = true;
+        this.snow.scale.set(3.33);
+        this.snow.fixedToCamera = true;
+        this.snow.animations.add('snowing');
+        this.snow.animations.play('snowing', 5, true);
         this.meele_Group = this.game.add.group();
         this.meele_Group.enableBody = true;
         this.meele_Group.physicsBodyType = Phaser.Physics.ARCADE;
@@ -221,10 +220,19 @@ var util = true;
             {
                 util = false;
                 this.actual_Enemy = this.enemies[i];
+                if(!this.enemies[i].fly)
+                {
+                    for(var o = i + 1; o < this.enemies.length; o++)
+                    {
+                        this.game.physics.arcade.collide(this.enemies[i].enemy, this.enemies[o].enemy);
+                        this.game.physics.arcade.collide(this.enemies[o].enemy, this.enemies[i].enemy);
+                    }
+                }
                 this.enemiesAlive++;
                 this.game.physics.arcade.collide(prota.dovah, this.enemies[i].enemy, enemy_Hit, null, this);
-                this.game.physics.arcade.collide(prota.attack, this.enemies[i].enemy, meele_Hit, null, this);
+                if(!this.enemies[i].fly) this.game.physics.arcade.collide(prota.attack, this.enemies[i].enemy, meele_Hit, null, this);
                 this.game.physics.arcade.collide(prota.bullet, this.enemies[i].enemy, magic_Hit, null, this);
+                if(!this.enemies[i].fly) this.game.physics.arcade.collide(this.enemies[i].enemy, layer);
                 this.enemies[i].update(prota_Texture);
             }
         }
