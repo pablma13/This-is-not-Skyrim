@@ -4,19 +4,32 @@ var magic_Create =  require ('./Proyectil.js');
 var magic_Cast;
 
 module.exports = class Dovah{
-    constructor(texture_Dova, group_Meele, group_Magic, game)
+    constructor(texture_Dova, group_Melee, group_Magic, game)
     {
         this.dovah_dir = 1;
         this.Talos_Please_Help_Me = false;
         this.dovah = texture_Dova;
-        this.meele = group_Meele;
+        this.melee = group_Melee;
+        this.melee_Damage = 1;
+        this.melee_Cost = 3;
+        this.melee_Recover = 4;
+        this.melee_Level = 0;
         this.magic = group_Magic;
-
+        this.magic_Damage = 1;
+        this.magic_Cost = 4;
+        this.magic_Level = 0;
+        this.magic_Recover = 4;
+        this.thuum_Recover = 8;
+        this.thuum_Level = 0;
         this.game = game;
 
         this.timer = this.game.time.create(false);
-        this.game.time.events.loop(1000, thuum, this);
+        this.thuum_Recover_Loop = this.game.time.events.loop(1000 * this.thuum_Recover, thuum, this);
         function thuum () { gameManager.Recover_Thumm(); }
+        this.magic_Recover_Loop = this.game.time.events.loop(1000 * this.magic_Recover, magic, this);
+        function magic () { gameManager.Recover_Magic(); }
+        this.melee_Recover_Loop = this.game.time.events.loop(1000 * this.melee_Recover, stamina, this);
+        function stamina () { gameManager.Recover_Stamine(); }
         this.dovah.animations.add('Left', [6,7], 5, true);
         this.dovah.animations.add('Right', [4,5], 5, true);
         this.dovah.animations.add('Down', [2,3], 5, true);
@@ -56,7 +69,7 @@ module.exports = class Dovah{
 
     attack_Meele()
     {
-        this.attack = this.meele.getFirstExists(false);
+        this.attack = this.melee.getFirstExists(false);
         if (this.attack && gameManager.Stamina() > 0)
         {
                 switch (this.dovah_dir)
@@ -82,10 +95,10 @@ module.exports = class Dovah{
                     this.attack.angle = 65;
                     break;
                 }
-                gameManager.Use_Stamina(1);
+                gameManager.Use_Stamina(this.melee_Cost);
                 this.timer.add(450, stop, this);
                 this.timer.start();
-                function stop() { this.attack.kill(); }
+                function stop() { this.melee.callAll('kill'); }
         }
     }
     attack_Magic()
@@ -95,6 +108,7 @@ module.exports = class Dovah{
             this.bullet = this.magic.getFirstExists(false);
             if (this.bullet)
             {
+                this.bullet.body.setSize(30, 30, 0, -30);
                 switch (this.dovah_dir)
                 {
                     case 1:
@@ -131,22 +145,47 @@ module.exports = class Dovah{
                     break;
             }
         }
-            gameManager.Use_Magic(2);
+            gameManager.Use_Magic(this.magic_Cost);
         }
     }
     hit()
     {
         if(!this.Talos_Please_Help_Me)
         {
-            if(gameManager.Life() > 0)
-            {
                 gameManager.Use_Life(1);
                 this.Talos_Please_Help_Me = true;
                 this.timer.add(500, All_God_Things_Ends, this);
                 this.timer.start();
-            }
-            else this.dovah.kill();
             function All_God_Things_Ends() { this.Talos_Please_Help_Me = false; }
         }
+        if(gameManager.Life() < 0) this.dovah.kill();
+    }
+    magic_UP(cost, power, cooldown)
+    {
+        this.magic_Level++;
+        if(this.magic_Cost - cost > 0) this.magic_Cost = this.magic_Cost - cost;
+        this.magic_Damage = this.magic_Damage + power;
+        if(this.magic_Recover - cooldown > 0) this.magic_Recover = this.magic_Recover - cooldown;
+        this.game.time.events.remove(this.magic_Recover_Loop);
+        this.magic_Recover_Loop = this.game.time.events.loop(1000 * this.magic_Recover, magic, this);
+        function magic () { gameManager.Recover_Magic(); }  
+    }
+    melee_UP(cost, power, cooldown)
+    {
+        this.melee_Level++;
+        if(this.melee_Cost - cost > 0) this.melee_Cost = this.melee_Cost - cost;
+        this.melee_Damage = this.melee_Damage + power;
+        if(this.melee_Recover - cooldown > 0) this.melee_Recover = this.melee_Recover - cooldown;
+        this.game.time.events.remove(this.melee_Recover_Loop);
+        this.melee_Recover_Loop = this.game.time.events.loop(1000 * this.melee_Recover, melee, this);
+        function melee () { gameManager.Recover_Stamine(); }  
+    }
+    thuum_UP(cooldown)
+    {
+        this.thuum_Level++;
+        if(this.thuum_Recover - cooldown > 0) this.thuum_Recover = this.thuum_Recover - cooldown;
+        this.game.time.events.remove(this.thuum_Recover_Loop);
+        this.thuum_Recover_Loop = this.game.time.events.loop(1000 * this.thuum_Recover, thuum, this);
+        function thuum () { gameManager.Recover_Thumm(); }
     }
 }

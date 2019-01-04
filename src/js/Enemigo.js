@@ -2,7 +2,7 @@
 module.exports = class Enemigo{
     constructor(index, texture, game)
     {
-        this.stop = false;
+        this.stop = true;
         var x = game.world.randomX;
         var y = game.world.randomY;
         var dragon_Race = (Math.floor((Math.random() * 5)) * 8);
@@ -10,39 +10,47 @@ module.exports = class Enemigo{
         this.alive = true;
         this.direction = true; //True = X
         this.timer = this.game.time.create(false);
-        if(x < (game.world.x / 4)) x = x + 200;
-        else if(x > ((game.world.x * 3) / 4)) x = x - 200;
-        if(y < (game.world.y / 4)) y = y + 200;
-        else if(y > ((game.world.y * 3) / 4)) y = y - 200;
+        if(x < (800 / 4)) x = x + 200;
+        else if(x > ((800 * 3) / 4)) x = x - 200;
+        if(y < (600 / 4)) y = y + 200;
+        else if(y > ((600 * 3) / 4)) y = y - 200;
         this.enemy = this.game.add.sprite(x, y, 'Dragon');
+        this.enemy.visible = false;
+        this.game.physics.enable(this.enemy, Phaser.Physics.ARCADE);
+        this.enemy.body.mass = 999;
         switch (dragon_Race)
         {
             case 0:
-            this.enemy.scale.set(1.75);
+            this.enemy.body.setSize(60, 20, 0, 40);
+            this.enemy.scale.set(2);
             this.health = 6;
             this.velocity = 30;
             this.fly = false;
             break;
             case 8:
-            this.enemy.scale.set(1);
+            this.enemy.body.setSize(60, 30, 0, 30);
+            this.enemy.scale.set(1.25);
             this.health = 2;
             this.velocity = 120;
             this.fly = false;
             break;
             case 16:
-            this.enemy.scale.set(1.25);
+            this.enemy.body.setSize(60, 30, 0, 30);
+            this.enemy.scale.set(1.5);
             this.health = 4;
             this.velocity = 50;
             this.fly = false;
             break;
             case 24:
-            this.enemy.scale.set(1.5);
+            this.enemy.body.setSize(60, 60);
+            this.enemy.scale.set(1.75);
             this.health = 6;
             this.velocity = 50;
             this.fly = true;
             break;
             case 32:
-            this.enemy.scale.set(1);
+            this.enemy.body.setSize(60, 60);
+            this.enemy.scale.set(1.25);
             this.health = 2;
             this.velocity = 100;
             this.fly = true;
@@ -60,10 +68,10 @@ module.exports = class Enemigo{
     }
     relax() { this.stop = true; }
     move() { this.stop = false; }
+    chains() { this.fly = false; }
     hit(num) 
     {
          if(this.health > 0) this.health = this.health - num; 
-         console.log(this.health);
          if(this.health <= 0)
          {
              this.enemy.kill();
@@ -77,11 +85,12 @@ module.exports = class Enemigo{
            if(this.direction)
            {
                 this.direction = false;
-                this.timer.add(3000, search, this);
+                this.timer.add(1000, search, this);
                 this.timer.start();
            } 
            function search() 
             { 
+                this.enemy.visible = true;
                this.direction = true;
                 if(Math.abs(player.x  - this.enemy.x) > Math.abs(player.y  - this.enemy.y))
                 {

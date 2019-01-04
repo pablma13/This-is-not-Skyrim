@@ -7,6 +7,7 @@ var dovah = require ('./Protagonista.js');
 var enemy = require ('./Enemigo.js');
 var ronda = [2,5,8,9,11];
 var ronda_Actual = 0;
+var mapa_Actual = 0;
 var prota;
 var prota_Texture;
 var meele_Texture;
@@ -15,19 +16,44 @@ var cursor;
 var meele_Button;
 var magic_Button;
 var thuum_Button;
+var level_UP_Button;
+var restart_Button;
 var magic_Interface;
 var stamina_Interface;
 var health_Interface;
 var thuum_Interface;
 var util = true;
-
+var fin = false;
+var maps = ['tundra', 'desierto'];
+var this_Game_Maps = [];
+var enemiesTotal = 0;
+var enemiesAlive = 0;
+var reset = false; //True reseteo ejecutado
     var BootScene = {
         preload: function () {
         // load here assets required for the loading screen
+        for (var i = 0; i < maps.length; i++)
+        {
+            this_Game_Maps[i] = Math.floor(Math.random() * maps.length)
+            var same_Number = true;
+            var z = 1;
+            while(same_Number && i < 0)
+            {
+                if(this_Game_Maps[i] == this_Game_Maps[i-z])
+                {
+                    i--;
+                    same_Number = false;
+                } 
+                else z++;
+                if(i-z < 0) same_Number = false;
+            }
+        }
         cursor = this.game.input.keyboard.createCursorKeys();
         meele_Button = this.game.input.keyboard.addKey(Phaser.Keyboard.Z);
         magic_Button = this.game.input.keyboard.addKey(Phaser.Keyboard.X);
         thuum_Button = this.game.input.keyboard.addKey(Phaser.Keyboard.C);
+        level_UP_Button = this.game.input.keyboard.addKey(Phaser.Keyboard.V);
+        restart_Button = this.game.input.keyboard.addKey(Phaser.Keyboard.R);
         this.game.load.image('preloader_bar', 'images/preloader_bar.png');
         this.game.load.image('Tittle', 'images/Titulos-Arte/titulo.png');
         this.game.load.image('Play', 'images/Titulos-Arte/PLAY.png');
@@ -67,7 +93,7 @@ var util = true;
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
         // TODO: load here the assets for the game
-        this.game.load.tilemap('map1', 'images/tundra.csv', null, Phaser.Tilemap.TILED_CSV);
+        this.game.load.tilemap('map1', 'images/'+ maps[this_Game_Maps[mapa_Actual]] +'.csv', null, Phaser.Tilemap.TILED_CSV);
         this.game.load.image('tileset', 'images/tileset.png');
         this.game.load.spritesheet('snow', 'images/snow.png', 240, 180);
         this.game.load.image('GameOver', 'images/interfaz/Títulos/GameOver.png');
@@ -80,6 +106,11 @@ var util = true;
         this.game.load.spritesheet('Dovah', 'images/Dovah/SpriteDovah.png', 62, 60);
         this.game.load.spritesheet('Magic', 'images/Dovah/Magic/Magic.png', 30, 30);
         this.game.load.spritesheet('Meele', 'images/Dovah/Meele/Attack.png', 55, 42);
+        this.game.load.spritesheet('Level_UP', 'images/Interfaz/Level_UP/level_UP.png', 32, 32);
+        this.game.load.image('Level_UP_Screen', 'images/Interfaz/Level_UP/Level_Up_Screen.png');
+        this.game.load.image('Magic_UP_Button', 'images/Interfaz/Level_UP/Magic_Button.png');
+        this.game.load.image('Melee_UP_Button', 'images/Interfaz/Level_UP/Melee_Button.png');
+        this.game.load.image('Thuum_UP_Button', 'images/Interfaz/Level_UP/Thuum_Button.png');
         this.enemy_Texture = this.game.load.spritesheet('Dragon', 'images/Enemigos/Enemigos.png',60,60);
         },
         create: function () {
@@ -96,33 +127,51 @@ var util = true;
 
         map.addTilesetImage('tileset');
 
-        map.setCollision([358, 359 , 360, 361, 374, 375, ]);
+        map.setCollision([72, 73, 74, 75, 88, 89, 90, 91, 
+                        177, 178, 209, 210, 229, 194, 192, 
+                        195, 179, 208, 180, 358, 359 , 360,
+                        361, 374, 375, 380, 390, 391, 406,
+                        407]);
 
         layer = map.createLayer(0);
 
         this.music_game = this.game.add.audio('Game_Music');
       //  this.music_game.play();
 
-       //next_Round();
        this.enemies = [];
+       enemiesTotal = ronda[ronda_Actual];
+       enemiesAlive = ronda[ronda_Actual];
+       for (var i = 0; i < enemiesTotal; i++)
+       {
+            this.enemies[i] = new enemy(i, this.enemy_Texture, this.game);
+       }
+   //    next_Round();
+       /*
        this.enemiesTotal = ronda[ronda_Actual];
        this.enemiesAlive = ronda[ronda_Actual];
        for (var i = 0; i < this.enemiesTotal; i++)
        {
            this.enemies[i] =new enemy(i, this.enemy_Texture, this.game);
-       }
+       }*/
 
-        prota_Texture = this.game.add.sprite( 200 , 500, 'Dovah');
+        prota_Texture = this.game.add.sprite( 300 , 500, 'Dovah');
         prota_Texture.smoothed = false;
+        prota_Texture.scale.set(1.25);
         this.game.physics.enable(prota_Texture, Phaser.Physics.ARCADE);
         prota_Texture.body.collideWorldBounds = true;
         prota_Texture.body.setSize(40, 10, 10, 45);
+        this.UP = this.game.add.sprite(160, 490, 'Level_UP');
+        this.UP.smoothed = false;
+        this.UP.scale.y = 4;
+        this.UP.scale.x = 5;
+        this.UP.animations.add('UP', [0,1,2,3,4,5], 5, true);
+        this.UP.play('UP');
         this.snow = this.game.add.sprite(0, 0, 'snow');
-        this.snow.visible = true;
+        this.snow.visible = false;
         this.snow.scale.set(3.33);
         this.snow.fixedToCamera = true;
         this.snow.animations.add('snowing');
-        this.snow.animations.play('snowing', 5, true);
+   //     this.snow.animations.play('snowing', 5, true);
         this.meele_Group = this.game.add.group();
         this.meele_Group.enableBody = true;
         this.meele_Group.physicsBodyType = Phaser.Physics.ARCADE;
@@ -141,7 +190,7 @@ var util = true;
         this.magic_Group = this.game.add.group();
         this.magic_Group.enableBody = true;
         this.magic_Group.physicsBodyType = Phaser.Physics.ARCADE;
-        for (var i = 0; i < 20; i++)
+        for (var i = 0; i < 30; i++)
         {
             var b = this.magic_Group.create(0, 0, 'Magic');
             b.name = 'Magic' + i;
@@ -149,6 +198,8 @@ var util = true;
             b.visible = false;
             b.smoothed = false;
             b.scale.y = 2;
+            b.checkWorldBounds = true;
+            b.events.onOutOfBounds.add(resetFire, this);
         }
         this.magic_Group.callAll('animations.add', 'animations', 'bullet', [0, 1, 2, 3, 4, 5], 5, true);
         this.magic_Group.callAll('animations.play', 'animations', 'bullet');
@@ -182,7 +233,7 @@ var util = true;
         stamina_Interface.scale.set(5);
         stamina_Interface.fixedToCamera = true;
         layer.smoothed = false;
-        //layer.scale.set(3);
+        //layer.scale.set(3); 
 
         this.GameOver = this.game.add.sprite( 0 , 0, 'GameOver');
         this.GameOver.visible = false;
@@ -190,94 +241,178 @@ var util = true;
         this.round_Clear = this.game.add.sprite(0, 0, 'RoundClear');
         this.round_Clear.visible = false;
         this.round_Clear.fixedToCamera = true;
+        this.level_UP_Screen = this.game.add.sprite( 0 , 0, 'Level_UP_Screen');
+        this.level_UP_Screen.smoothed = false;
+        this.level_UP_Screen.scale.set(1.335);
+        this.level_UP_Screen.visible = false;
+        this.level_UP_Screen.fixedToCamera = true;
+        this.levels = 6;
+        this.magic_UP = [];
+        for(var i = 0; i < this.levels; i++)
+        {
+            this.magic_UP[i] = this.game.add.sprite( 2, 80*i, 'Magic_Interface');
+            this.magic_UP[i].smoothed = false;
+            this.magic_UP[i].scale.set(8);
+            this.magic_UP[i].fixedToCamera = true;
+            this.magic_UP[i].animations.add('UP_Magic', [9], 5, true);
+            this.magic_UP[i].animations.add('Used', [0], 5, true);
+            this.magic_UP[i].play('UP_Magic');
+            this.magic_UP[i].visible = false;
+        }
+        this.magic_UP_Button = this.game.add.button(24, 30, 'Magic_UP_Button', magic_UP_Click, this, 2, 1, 0);
+        this.magic_UP_Button.fixedToCamera = true;
+        this.magic_UP_Button.input.useHandCursor = true;
+        this.magic_UP_Button.smoothed = false;
+        this.magic_UP_Button.scale.set(1.2);
+        this.magic_UP_Button.visible = false;
+        this.thuum_UP = [];
+        for(var i = 0; i < this.levels; i++)
+        {
+            this.thuum_UP[i] = this.game.add.sprite( 272, 80*i, 'Thu-um_Interface');
+            this.thuum_UP[i].smoothed = false;
+            this.thuum_UP[i].scale.set(8);
+            this.thuum_UP[i].fixedToCamera = true;
+            this.thuum_UP[i].animations.add('UP_Thuum', [0], 5, true);
+            this.thuum_UP[i].animations.add('Used', [7], 5, true);
+            this.thuum_UP[i].play('UP_Thuum');
+            this.thuum_UP[i].visible = false;
+        }
+        this.thuum_UP_Button = this.game.add.button(280, 30, 'Thuum_UP_Button', thuum_UP_Click, this, 2, 1, 0);
+        this.thuum_UP_Button.fixedToCamera = true;
+        this.thuum_UP_Button.input.useHandCursor = true;
+        this.thuum_UP_Button.smoothed = false;
+        this.thuum_UP_Button.scale.set(1.2);
+        this.thuum_UP_Button.visible = false;
+        this.melee_UP = [];
+        for(var i = 0; i < this.levels; i++)
+        {
+            this.melee_UP[i] = this.game.add.sprite( 542, 80*i, 'Stamina_Interface');
+            this.melee_UP[i].smoothed = false;
+            this.melee_UP[i].scale.set(8);
+            this.melee_UP[i].fixedToCamera = true;
+            this.melee_UP[i].animations.add('UP_Melee', [9], 5, true);
+            this.melee_UP[i].animations.add('Used', [0], 5, true);
+            this.melee_UP[i].play('UP_Melee');
+            this.melee_UP[i].visible = false;
+        }
+        this.melee_UP_Button = this.game.add.button(562 , 30, 'Melee_UP_Button', melee_UP_Click, this, 2, 1, 0);
+        this.melee_UP_Button.fixedToCamera = true;
+        this.melee_UP_Button.input.useHandCursor = true;
+        this.melee_UP_Button.smoothed = false;
+        this.melee_UP_Button.scale.set(1.2);
+        this.melee_UP_Button.visible = false;
         layer.resizeWorld();
     },
     update: function()
     {
-        this.game.physics.arcade.collide(prota_Texture, layer);
-        if(gameManager.Stamina() > 0)this.s = Math.abs(gameManager.Stamina() - 10);
-        if(gameManager.Magic() > 0)this.m = Math.abs(gameManager.Magic() - 10);
-        if(gameManager.Life() > 0)this.h = Math.abs(gameManager.Life() - 10);
-        if(gameManager.Thuum() > 2)this.t = Math.abs(gameManager.Thuum() - 10);
-        magic_Button.onDown.add(magic, this);
-        magic_Interface.animations.add('Use_Magic', [this.m], 5, true);
-        meele_Button.onDown.add(stamina, this);
-        stamina_Interface.animations.add('Use_Stamina', [this.s], 5, true);
-        health_Interface.animations.add('Use_Health', [this.h], 5, true);
-        thuum_Button.onDown.add(thuum, this);
-        thuum_Interface.animations.add('Use_thuum', [this.t], 5, true);
-        thuum_Interface.play('Use_thuum');
-        prota_Texture.body.velocity.set(0);
-        if(cursor.left.isDown) prota.move(3);
-        else if(cursor.right.isDown) prota.move(4);
-        else if(cursor.up.isDown) prota.move(1);
-        else if(cursor.down.isDown) prota.move(2);
-        else prota.stop();
-        for (var i = 0; i < this.enemies.length; i++)
+        if(!fin)
         {
-            if(util)this.enemiesAlive = 0;
-            if (this.enemies[i].alive)
+            this.UP.x = prota.dovah.x -40;
+            this.UP.y = prota.dovah.y - 10;
+            this.game.physics.arcade.collide(prota_Texture, layer);
+            if(gameManager.Stamina() > 0)this.s = Math.abs(gameManager.Stamina() - 10);
+            if(gameManager.Magic() > 0)this.m = Math.abs(gameManager.Magic() - 10);
+            if(gameManager.Life() > 0)this.h = Math.abs(gameManager.Life() - 10);
+            if(gameManager.Thuum() > 2)this.t = Math.abs(gameManager.Thuum() - 10);
+            magic_Button.onDown.add(magic, this);
+            magic_Interface.animations.add('Use_Magic', [this.m], 5, true);
+            magic_Interface.play('Use_Magic');
+            meele_Button.onDown.add(stamina, this);
+            stamina_Interface.animations.add('Use_Stamina', [this.s], 5, true);
+            stamina_Interface.play('Use_Stamina');
+            health_Interface.animations.add('Use_Health', [this.h], 5, true);
+            thuum_Button.onDown.add(thuum, this);
+            thuum_Interface.animations.add('Use_thuum', [this.t], 5, true);
+            thuum_Interface.play('Use_thuum');
+            level_UP_Button.onDown.add(level_UP, this);
+            prota_Texture.body.velocity.set(0);
+            if(cursor.left.isDown) prota.move(3);
+            else if(cursor.right.isDown) prota.move(4);
+            else if(cursor.up.isDown) prota.move(1);
+            else if(cursor.down.isDown) prota.move(2);
+            else prota.stop();
+            for (var i = 0; i < this.enemies.length; i++)
             {
-                util = false;
-                this.actual_Enemy = this.enemies[i];
-                if(!this.enemies[i].fly)
+                if(util) enemiesAlive = 0;
+                if (this.enemies[i].alive)
                 {
-                    for(var o = i + 1; o < this.enemies.length; o++)
+                    util = false;
+                    this.actual_Enemy = this.enemies[i];
+                    if(!this.enemies[i].fly)
                     {
-                        this.game.physics.arcade.collide(this.enemies[i].enemy, this.enemies[o].enemy);
-                        this.game.physics.arcade.collide(this.enemies[o].enemy, this.enemies[i].enemy);
+                        for(var o = i + 1; o < this.enemies.length; o++)
+                        {
+                            this.game.physics.arcade.collide(this.enemies[i].enemy, this.enemies[o].enemy);
+                            this.game.physics.arcade.collide(this.enemies[o].enemy, this.enemies[i].enemy);
+                        }
+                    }
+                    enemiesAlive++;
+                    if((Math.abs(prota.dovah.x  - this.enemies[i].enemy.x) < 50) && (Math.abs(prota.dovah.y  - this.enemies[i].enemy.y) < 50))
+                    {
+                        if((this.enemies[i].enemy.y > prota.dovah.y) || this.enemies[i].fly) this.game.world.bringToTop(this.enemies[i].enemy);
+                        else this.game.world.bringToTop(prota.dovah);
+                    }
+                    this.game.physics.arcade.collide(prota.dovah, this.enemies[i].enemy, enemy_Hit, null, this);
+                    if(!this.enemies[i].fly) this.game.physics.arcade.collide(prota.attack, this.enemies[i].enemy, meele_Hit, null, this);
+                    this.game.physics.arcade.overlap(prota.bullet, this.enemies[i].enemy, magic_Hit, null, this);
+                    if(!this.enemies[i].fly) this.game.physics.arcade.collide(this.enemies[i].enemy, layer);
+                    this.enemies[i].update(prota_Texture);
+                }
+            }
+            util = true;
+            if(enemiesAlive <= 0 && !reset)
+            {
+                this.timer.add(2000, next, this);
+                reset = true;
+                this.round_Clear.visible = true;
+                this.timer.start();
+                function next() 
+                { 
+                    reset = false;
+                    ronda_Actual++;
+                    this.round_Clear.visible = false;
+                    if(ronda_Actual >= ronda.length)
+                    {
+                        ronda_Actual = 0;
+                        mapa_Actual++;
+                        this.game.state.start('preloader');
+                    }
+                    else
+                    {
+                        enemiesTotal = ronda[ronda_Actual];
+                        enemiesAlive = ronda[ronda_Actual];
+                        for (var i = 0; i < enemiesTotal; i++)
+                        {
+                             this.enemies[i] = new enemy(i, this.enemy_Texture, this.game);
+                        }
                     }
                 }
-                this.enemiesAlive++;
-                this.game.physics.arcade.collide(prota.dovah, this.enemies[i].enemy, enemy_Hit, null, this);
-                if(!this.enemies[i].fly) this.game.physics.arcade.collide(prota.attack, this.enemies[i].enemy, meele_Hit, null, this);
-                this.game.physics.arcade.collide(prota.bullet, this.enemies[i].enemy, magic_Hit, null, this);
-                if(!this.enemies[i].fly) this.game.physics.arcade.collide(this.enemies[i].enemy, layer);
-                this.enemies[i].update(prota_Texture);
-            }
+                
+            }// next_Round();
         }
-        util = true;
-        if(this.enemiesAlive <= 0)
+        else 
         {
-            this.timer.add(1000, next, this);
-            this.round_Clear.visible = true;
-            ronda_Actual++;
-            this.enemiesTotal = ronda[ronda_Actual];
-            this.enemiesAlive = ronda[ronda_Actual];
-            for (var i = 0; i < this.enemiesTotal; i++)
-            {
-                 this.enemies[i] = new enemy(i, this.enemy_Texture, this.game);
-            }
-            this.timer.start();
-            function next() { this.round_Clear.visible = false; }
-            
-        }// next_Round();
+            restart_Button.onDown.add(restart, this);
+        }
     } 
     };
-    function d()
+    function next_Round()
     {
-        prota_Texture.body.velocity.set(0);
+       enemiesTotal = ronda[ronda_Actual];
+       enemiesAlive = ronda[ronda_Actual];
+       for (var i = 0; i < enemiesTotal; i++)
+       {
+            this.enemies[i] = new enemy(i, this.enemy_Texture, this.game);
+       }
     }
-  /*  function next_Round()
-    {
-        this.enemies = [];
-        this.enemiesTotal = ronda[ronda_Actual];
-        this.enemiesAlive = ronda_Actual;
-        for (var i = 0; i < this.enemiesTotal; i++)
-        {
-            this.enemies.push(new enemy(i, this.enemy_Texture, this.game));
-        }
-    }*/
     function stamina ()
     {
         prota.attack_Meele();
-        stamina_Interface.play('Use_Stamina');
     }
 
     function magic ()
     {
         prota.attack_Magic();
-        magic_Interface.play('Use_Magic');
     }
     function thuum()
     {
@@ -285,6 +420,7 @@ var util = true;
         {
             this.timer.add(3000, stop, this);
             this.thuum_Screen.visible = true;
+            this.game.world.bringToTop(this.thuum_Screen);
             this.thuum_Screen.play('FUSH_RO_DAH');
             for (var i = 0; i < this.enemies.length; i++)
             {
@@ -303,17 +439,95 @@ var util = true;
                 {
                     for (var i = 0; i < this.enemies.length; i++)
                     {
-                        this.enemies[i].hit(999);
+                       if(!this.enemies[i].fly) this.enemies[i].hit(999);
+                       else this.enemies[i].chains();
                     }
                 }
             }
+        }
+    }
+
+    function level_UP()
+    {
+        if(this.level_UP_Screen.visible)
+        {
+            this.level_UP_Screen.visible = false;
+            for(var i = 0; i < this.levels; i++)
+            {
+                this.magic_UP[i].visible = false;
+                this.melee_UP[i].visible = false;
+                this.thuum_UP[i].visible = false;
+            }
+            this.magic_UP_Button.visible = false;
+            this.melee_UP_Button.visible = false;
+            this.thuum_UP_Button.visible = false;
+        }
+        else 
+        {
+            this.level_UP_Screen.visible = true;
+            for(var i = 0; i < this.levels; i++)
+            {
+                this.magic_UP[i].visible = true;
+                this.melee_UP[i].visible = true;
+                this.thuum_UP[i].visible = true;
+            }
+            this.magic_UP_Button.visible = true;
+            this.melee_UP_Button.visible = true;
+            this.thuum_UP_Button.visible = true;
+        }
+    }
+    function magic_UP_Click()
+    {
+        if(gameManager.New_Skill() && prota.magic_Level < this.levels)
+        {
+            this.magic_UP[prota.magic_Level].play('Used');
+            gameManager.Use_Skill_Point();
+            if(prota.magic_Level % 2 == 0)
+            {
+                prota.magic_UP(0,1,0);
+            }
+            else
+            {
+                prota.magic_UP(1,1,1);
+            }
+        }
+    }
+    function melee_UP_Click()
+    {
+        if(gameManager.New_Skill() && prota.melee_Level < this.levels)
+        {
+            this.melee_UP[prota.melee_Level].play('Used');
+            gameManager.Use_Skill_Point();
+            if(prota.melee_Level % 2 == 0)
+            {
+                prota.melee_UP(0,1,0);
+            }
+            else
+            {
+                prota.melee_UP(1,1,1);
+            }
+        }
+    }
+    function thuum_UP_Click()
+    {
+        if(gameManager.New_Skill() && prota.thuum_Level < this.levels)
+        {
+            this.thuum_UP[prota.thuum_Level].play('Used');
+            gameManager.Use_Skill_Point();
+            prota.thuum_UP(1);
         }
     }
     function enemy_Hit ()
     {
         prota.hit();
         health_Interface.play('Use_Health');
-        if(gameManager.Life() <= 0) this.GameOver.visible = true;
+        console.log(gameManager.Life());
+        if(gameManager.Life() < 0)
+        {
+            this.GameOver.visible = true;
+            this.game.world.bringToTop(this.GameOver);
+            fin = true;
+        }
     }
     function meele_Hit ()
     {
@@ -324,6 +538,16 @@ var util = true;
     {
         prota.bullet.kill();
         this.actual_Enemy.hit(2);
+    }
+    function restart()
+    {
+        fin = false;
+        gameManager.Restart();
+        this.game.state.start('menu');
+    }
+    function resetFire(fire)
+    {
+        fire.kill();
     }
 window.onload = function () {
     var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');
