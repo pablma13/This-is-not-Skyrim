@@ -2,7 +2,7 @@
 module.exports = class Enemigo{
     constructor(index, texture, game)
     {
-        this.stop = true;
+        this.stop = false;
         var x = game.world.randomX;
         var y = game.world.randomY;
         var dragon_Race = (Math.floor((Math.random() * 5)) * 8);
@@ -26,6 +26,7 @@ module.exports = class Enemigo{
             this.health = 6;
             this.velocity = 30;
             this.fly = false;
+            this.loot = 3;
             break;
             case 8:
             this.enemy.body.setSize(60, 30, 0, 30);
@@ -33,6 +34,7 @@ module.exports = class Enemigo{
             this.health = 2;
             this.velocity = 120;
             this.fly = false;
+            this.loot = 1;
             break;
             case 16:
             this.enemy.body.setSize(60, 30, 0, 30);
@@ -40,6 +42,7 @@ module.exports = class Enemigo{
             this.health = 4;
             this.velocity = 50;
             this.fly = false;
+            this.loot = 2;
             break;
             case 24:
             this.enemy.body.setSize(60, 60);
@@ -47,6 +50,7 @@ module.exports = class Enemigo{
             this.health = 6;
             this.velocity = 50;
             this.fly = true;
+            this.loot = 3;
             break;
             case 32:
             this.enemy.body.setSize(60, 60);
@@ -54,6 +58,7 @@ module.exports = class Enemigo{
             this.health = 2;
             this.velocity = 100;
             this.fly = true;
+            this.loot = 1;
             break;
         }
         this.enemy.animations.add('Left', [6 + dragon_Race, 7 + dragon_Race], 5, true);
@@ -69,11 +74,12 @@ module.exports = class Enemigo{
     relax() { this.stop = true; }
     move() { this.stop = false; }
     chains() { this.fly = false; }
-    hit(num) 
+    hit(num, player) 
     {
          if(this.health > 0) this.health = this.health - num; 
          if(this.health <= 0)
          {
+             player.gain_EXP(this.loot);
              this.enemy.kill();
              this.alive = false;
          }
@@ -90,7 +96,7 @@ module.exports = class Enemigo{
            } 
            function search() 
             { 
-                this.enemy.visible = true;
+               if(this.alive)this.enemy.visible = true;
                this.direction = true;
                 if(Math.abs(player.x  - this.enemy.x) > Math.abs(player.y  - this.enemy.y))
                 {

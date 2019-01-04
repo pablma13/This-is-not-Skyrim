@@ -4,7 +4,7 @@ var magic_Create =  require ('./Proyectil.js');
 var magic_Cast;
 
 module.exports = class Dovah{
-    constructor(texture_Dova, group_Melee, group_Magic, game)
+    constructor(texture_Dova, group_Melee, group_Magic, game, level_UP)
     {
         this.dovah_dir = 1;
         this.Talos_Please_Help_Me = false;
@@ -12,16 +12,18 @@ module.exports = class Dovah{
         this.melee = group_Melee;
         this.melee_Damage = 1;
         this.melee_Cost = 3;
-        this.melee_Recover = 4;
+        this.melee_Recover = 3;
         this.melee_Level = 0;
         this.magic = group_Magic;
         this.magic_Damage = 1;
         this.magic_Cost = 4;
         this.magic_Level = 0;
-        this.magic_Recover = 4;
+        this.magic_Recover = 3;
         this.thuum_Recover = 8;
         this.thuum_Level = 0;
         this.game = game;
+        this.EXP = 0;
+        this.level_UP = level_UP;
 
         this.timer = this.game.time.create(false);
         this.thuum_Recover_Loop = this.game.time.events.loop(1000 * this.thuum_Recover, thuum, this);
@@ -187,5 +189,22 @@ module.exports = class Dovah{
         this.game.time.events.remove(this.thuum_Recover_Loop);
         this.thuum_Recover_Loop = this.game.time.events.loop(1000 * this.thuum_Recover, thuum, this);
         function thuum () { gameManager.Recover_Thumm(); }
+    }
+    gain_EXP(Exp)
+    {
+        this.EXP = this.EXP + Exp;
+        if(this.EXP >= 10)
+        {
+            console.log('caching!!!');
+            this.level_UP.visible = true;
+            this.timer.add(1000, end, this);
+            this.timer.start();
+            function end() 
+            {
+                this.level_UP.visible = false;
+            }
+            this.EXP = this.EXP - 10;
+            gameManager.Level_UP();
+        } 
     }
 }

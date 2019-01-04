@@ -1,3 +1,413 @@
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+'use strict';
+module.exports = class Enemigo{
+    constructor(index, texture, game)
+    {
+        this.stop = false;
+        var x = game.world.randomX;
+        var y = game.world.randomY;
+        var dragon_Race = (Math.floor((Math.random() * 5)) * 8);
+        this.game = game;
+        this.alive = true;
+        this.direction = true; //True = X
+        this.timer = this.game.time.create(false);
+        if(x < (800 / 4)) x = x + 200;
+        else if(x > ((800 * 3) / 4)) x = x - 200;
+        if(y < (600 / 4)) y = y + 200;
+        else if(y > ((600 * 3) / 4)) y = y - 200;
+        this.enemy = this.game.add.sprite(x, y, 'Dragon');
+        this.enemy.visible = false;
+        this.game.physics.enable(this.enemy, Phaser.Physics.ARCADE);
+        this.enemy.body.mass = 999;
+        switch (dragon_Race)
+        {
+            case 0:
+            this.enemy.body.setSize(60, 20, 0, 40);
+            this.enemy.scale.set(2);
+            this.health = 6;
+            this.velocity = 30;
+            this.fly = false;
+            this.loot = 3;
+            break;
+            case 8:
+            this.enemy.body.setSize(60, 30, 0, 30);
+            this.enemy.scale.set(1.25);
+            this.health = 2;
+            this.velocity = 120;
+            this.fly = false;
+            this.loot = 1;
+            break;
+            case 16:
+            this.enemy.body.setSize(60, 30, 0, 30);
+            this.enemy.scale.set(1.5);
+            this.health = 4;
+            this.velocity = 50;
+            this.fly = false;
+            this.loot = 2;
+            break;
+            case 24:
+            this.enemy.body.setSize(60, 60);
+            this.enemy.scale.set(1.75);
+            this.health = 6;
+            this.velocity = 50;
+            this.fly = true;
+            this.loot = 3;
+            break;
+            case 32:
+            this.enemy.body.setSize(60, 60);
+            this.enemy.scale.set(1.25);
+            this.health = 2;
+            this.velocity = 100;
+            this.fly = true;
+            this.loot = 1;
+            break;
+        }
+        this.enemy.animations.add('Left', [6 + dragon_Race, 7 + dragon_Race], 5, true);
+        this.enemy.animations.add('Right', [0 + dragon_Race, 1 + dragon_Race], 5, true);
+        this.enemy.animations.add('Down', [4 + dragon_Race, 5 + dragon_Race], 5, true);
+        this.enemy.animations.add('Up', [2 + dragon_Race, 3 + dragon_Race], 5, true);
+        this.enemy.name = index.toString();
+        this.game.physics.enable(this.enemy, Phaser.Physics.ARCADE);
+        this.enemy.body.inmovable = true;
+        this.enemy.body.collideWorldBounds = true;
+        this.enemy.body.bounce.setTo(1, 1);
+    }
+    relax() { this.stop = true; }
+    move() { this.stop = false; }
+    chains() { this.fly = false; }
+    hit(num, player) 
+    {
+         if(this.health > 0) this.health = this.health - num; 
+         if(this.health <= 0)
+         {
+             player.gain_EXP(this.loot);
+             this.enemy.kill();
+             this.alive = false;
+         }
+    }
+    update(player)
+    {
+        if(!this.stop)
+        {
+           if(this.direction)
+           {
+                this.direction = false;
+                this.timer.add(1000, search, this);
+                this.timer.start();
+           } 
+           function search() 
+            { 
+               if(this.alive)this.enemy.visible = true;
+               this.direction = true;
+                if(Math.abs(player.x  - this.enemy.x) > Math.abs(player.y  - this.enemy.y))
+                {
+                    if((player.x  - this.enemy.x) > 0)
+                    {
+                        this.enemy.play('Right');
+                        this.enemy.body.velocity.y = 0;
+                        this.enemy.body.velocity.x = this.velocity;
+                    }
+                    else 
+                    {
+                        this.enemy.play('Left');
+                        this.enemy.body.velocity.y = 0;
+                        this.enemy.body.velocity.x = -this.velocity;
+                    }   
+                }
+                else 
+                {
+                    if((player.y  - this.enemy.y) > 0)
+                    {
+                        this.enemy.play('Down');
+                        this.enemy.body.velocity.x = 0;
+                        this.enemy.body.velocity.y = this.velocity;
+                    }
+                    else 
+                    {
+                        this.enemy.play('Up');
+                        this.enemy.body.velocity.x = 0;
+                        this.enemy.body.velocity.y = -this.velocity;
+                    }
+                }
+            }
+        }
+        else
+        {
+            this.enemy.body.velocity.y = 0;
+            this.enemy.body.velocity.x = 0;
+        }
+    }
+}
+},{}],2:[function(require,module,exports){
+'use strict';
+var magic = 10;
+var stamina = 10;
+var life = 9;
+var thuum = 9;
+var skill_Points = 9;
+
+function Magic () { return magic; }
+function Use_Magic(num) { magic = magic - num;}
+function Recover_Magic() { if(magic < 10) magic++; }
+
+function Stamina () { return stamina; }
+function Use_Stamina(num) { stamina = stamina - num;}
+function Recover_Stamine() { if(stamina < 10) stamina++; }
+
+function Life () { return life; }
+function Use_Life(num) {life = life - num;}
+
+function Thuum () { return thuum; }
+function Use_Thuum() {thuum = 9;}
+function Recover_Thumm() {thuum--;}
+
+function New_Skill() 
+{ 
+    if(skill_Points > 0) return true;
+    else return false;
+}
+function Level_UP() { skill_Points++; }
+function Use_Skill_Point() { skill_Points--; }
+
+function Restart()
+{
+    magic = 9;
+    stamina = 9;
+    life = 9;
+    thuum = 9;
+}
+module.exports = { Life, Use_Life, Stamina, Use_Stamina, Magic,  Use_Magic, 
+                   Thuum, Use_Thuum, Recover_Thumm, Recover_Magic, Recover_Stamine, 
+                   Restart, New_Skill, Level_UP, Use_Skill_Point};
+},{}],3:[function(require,module,exports){
+'use strict';
+const gameManager = require ('./GameManager.js');
+var magic_Create =  require ('./Proyectil.js');
+var magic_Cast;
+
+module.exports = class Dovah{
+    constructor(texture_Dova, group_Melee, group_Magic, game, level_UP)
+    {
+        this.dovah_dir = 1;
+        this.Talos_Please_Help_Me = false;
+        this.dovah = texture_Dova;
+        this.melee = group_Melee;
+        this.melee_Damage = 1;
+        this.melee_Cost = 3;
+        this.melee_Recover = 3;
+        this.melee_Level = 0;
+        this.magic = group_Magic;
+        this.magic_Damage = 1;
+        this.magic_Cost = 4;
+        this.magic_Level = 0;
+        this.magic_Recover = 3;
+        this.thuum_Recover = 8;
+        this.thuum_Level = 0;
+        this.game = game;
+        this.EXP = 0;
+        this.level_UP = level_UP;
+
+        this.timer = this.game.time.create(false);
+        this.thuum_Recover_Loop = this.game.time.events.loop(1000 * this.thuum_Recover, thuum, this);
+        function thuum () { gameManager.Recover_Thumm(); }
+        this.magic_Recover_Loop = this.game.time.events.loop(1000 * this.magic_Recover, magic, this);
+        function magic () { gameManager.Recover_Magic(); }
+        this.melee_Recover_Loop = this.game.time.events.loop(1000 * this.melee_Recover, stamina, this);
+        function stamina () { gameManager.Recover_Stamine(); }
+        this.dovah.animations.add('Left', [6,7], 5, true);
+        this.dovah.animations.add('Right', [4,5], 5, true);
+        this.dovah.animations.add('Down', [2,3], 5, true);
+        this.dovah.animations.add('Up', [0,1], 5, true);
+
+        this.game.physics.enable(this.dovah, Phaser.Physics.ARCADE)
+    }
+
+    X (){ return this.dovah_X; }
+    Y (){ return this.dovah_Y; }
+
+    move(dir) 
+    { //Mover jugador
+        switch (dir)
+        {
+            case 1:
+            this.dovah.play('Up');
+            this.dovah.body.velocity.y = -250;
+            break;
+            case 2:
+            this.dovah.play('Down');
+            this.dovah.body.velocity.y = +250;
+            break;
+            case 3:
+            this.dovah.play('Left');
+            this.dovah.body.velocity.x = -250;
+            break;
+            case 4:
+            this.dovah.play('Right');
+            this.dovah.body.velocity.x = +250;
+            break;
+        }
+        this.dovah_dir = dir;
+    }
+
+    stop(){this.dovah.animations.stop();}
+
+    attack_Meele()
+    {
+        this.attack = this.melee.getFirstExists(false);
+        if (this.attack && gameManager.Stamina() > 0)
+        {
+                switch (this.dovah_dir)
+                {
+                    case 1:
+                    this.attack.reset(this.dovah.x - 5 , this.dovah.y - 15);
+                    this.attack.scale.x = 1;
+                    this.attack.angle = -40;
+                    break;
+                    case 2:
+                    this.attack.reset(this.dovah.x + 75 , this.dovah.y + 65);
+                    this.attack.scale.x = 1;
+                    this.attack.angle = 130;
+                    break;
+                    case 3:
+                    this.attack.reset(this.dovah.x - 15 , this.dovah.y + 5);
+                    this.attack.scale.x = -1;
+                    this.attack.angle = -65;
+                    break;
+                    case 4:
+                    this.attack.reset(this.dovah.x + 95 , this.dovah.y + 5);
+                    this.attack.scale.x = 1;
+                    this.attack.angle = 65;
+                    break;
+                }
+                gameManager.Use_Stamina(this.melee_Cost);
+                this.timer.add(450, stop, this);
+                this.timer.start();
+                function stop() { this.melee.callAll('kill'); }
+        }
+    }
+    attack_Magic()
+    {
+        if(gameManager.Magic() > 0)
+        {
+            this.bullet = this.magic.getFirstExists(false);
+            if (this.bullet)
+            {
+                this.bullet.body.setSize(30, 30, 0, -30);
+                switch (this.dovah_dir)
+                {
+                    case 1:
+                //magic_Create(this.game, (this.dovah.x + 65), this.dovah.y, 180, 0, -300, 2, this.magic);
+                    this.bullet.reset(this.dovah.x + 65 , this.dovah.y);
+                    this.bullet.body.velocity.y = -300;
+                    this.bullet.body.velocity.x = 0;
+                    this.bullet.scale.x = 2;
+                    this.bullet.angle = 180;
+                    break;
+                    case 2:
+                    //magic_Create(this.game, (this.dovah.x + 15), (this.dovah.y + 65), 0, 0, 300, 2, this.magic);
+                    this.bullet.reset(this.dovah.x  + 15 , this.dovah.y + 65);
+                    this.bullet.body.velocity.y = 300;
+                    this.bullet.body.velocity.x = 0;
+                    this.bullet.scale.x = 2;
+                    this.bullet.angle = 0;
+                    break;
+                    case 3:
+                    //magic_Create(this.game, (this.dovah.x + 15), (this.dovah.y + 65), 90, -300, 0, -2, this.magic);
+                    this.bullet.reset(this.dovah.x  + 15 , this.dovah.y  + 65);
+                    this.bullet.body.velocity.y = 0;
+                    this.bullet.body.velocity.x = -300;
+                    this.bullet.scale.x = -2;
+                    this.bullet.angle = 90;
+                    break;
+                    case 4:
+                    //magic_Create(this.game, (this.dovah.x + 65), (this.dovah.y + 65), -90, 300, 0, 2, this.magic);
+                    this.bullet.reset(this.dovah.x + 65 , this.dovah.y + 65);
+                    this.bullet.body.velocity.y = 0;
+                    this.bullet.body.velocity.x = 300;
+                    this.bullet.scale.x = 2;
+                    this.bullet.angle = -90;
+                    break;
+            }
+        }
+            gameManager.Use_Magic(this.magic_Cost);
+        }
+    }
+    hit()
+    {
+        if(!this.Talos_Please_Help_Me)
+        {
+                gameManager.Use_Life(1);
+                this.Talos_Please_Help_Me = true;
+                this.timer.add(500, All_God_Things_Ends, this);
+                this.timer.start();
+            function All_God_Things_Ends() { this.Talos_Please_Help_Me = false; }
+        }
+        if(gameManager.Life() < 0) this.dovah.kill();
+    }
+    magic_UP(cost, power, cooldown)
+    {
+        this.magic_Level++;
+        if(this.magic_Cost - cost > 0) this.magic_Cost = this.magic_Cost - cost;
+        this.magic_Damage = this.magic_Damage + power;
+        if(this.magic_Recover - cooldown > 0) this.magic_Recover = this.magic_Recover - cooldown;
+        this.game.time.events.remove(this.magic_Recover_Loop);
+        this.magic_Recover_Loop = this.game.time.events.loop(1000 * this.magic_Recover, magic, this);
+        function magic () { gameManager.Recover_Magic(); }  
+    }
+    melee_UP(cost, power, cooldown)
+    {
+        this.melee_Level++;
+        if(this.melee_Cost - cost > 0) this.melee_Cost = this.melee_Cost - cost;
+        this.melee_Damage = this.melee_Damage + power;
+        if(this.melee_Recover - cooldown > 0) this.melee_Recover = this.melee_Recover - cooldown;
+        this.game.time.events.remove(this.melee_Recover_Loop);
+        this.melee_Recover_Loop = this.game.time.events.loop(1000 * this.melee_Recover, melee, this);
+        function melee () { gameManager.Recover_Stamine(); }  
+    }
+    thuum_UP(cooldown)
+    {
+        this.thuum_Level++;
+        if(this.thuum_Recover - cooldown > 0) this.thuum_Recover = this.thuum_Recover - cooldown;
+        this.game.time.events.remove(this.thuum_Recover_Loop);
+        this.thuum_Recover_Loop = this.game.time.events.loop(1000 * this.thuum_Recover, thuum, this);
+        function thuum () { gameManager.Recover_Thumm(); }
+    }
+    gain_EXP(Exp)
+    {
+        this.EXP = this.EXP + Exp;
+        if(this.EXP >= 10)
+        {
+            console.log('caching!!!');
+            this.level_UP.visible = true;
+            this.timer.add(1000, end, this);
+            this.timer.start();
+            function end() 
+            {
+                this.level_UP.visible = false;
+            }
+            this.EXP = this.EXP - 10;
+            gameManager.Level_UP();
+        } 
+    }
+}
+},{"./GameManager.js":2,"./Proyectil.js":4}],4:[function(require,module,exports){
+'use strict';
+var bullet;
+function proyectil(game, pos_X, pos_Y, angle, velocity_X, velocity_Y, scale, group)
+{
+    bullet = group.getFirstExists(false);
+
+    if (bullet)
+    {
+        bullet.reset(pos_X , pos_Y);
+        bullet.body.velocity.y = velocity_Y;
+        bullet.body.velocity.x = velocity_X;
+        bullet.scale.x = scale;
+        bullet.angle = angle;
+    }
+}
+module.exports = proyectil;
+},{}],5:[function(require,module,exports){
 'use strict';
 
 var map;
@@ -560,3 +970,4 @@ window.onload = function () {
   
     game.state.start('boot');
   };
+},{"./Enemigo.js":1,"./GameManager.js":2,"./Protagonista.js":3}]},{},[5]);
