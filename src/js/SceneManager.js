@@ -5,9 +5,9 @@ var layer;
 const gameManager = require ('./GameManager.js');
 var dovah = require ('./Protagonista.js');
 var enemy = require ('./Enemigo.js');
-var ronda = [2,5,8,9,11];
 var ronda_Actual = 0;
 var mapa_Actual = 0;
+var ronda = [1 + mapa_Actual * 2];
 var prota;
 var prota_Texture;
 var meele_Texture;
@@ -24,11 +24,13 @@ var health_Interface;
 var thuum_Interface;
 var util = true;
 var fin = false;
-var maps = ['tundra', 'desierto'];
+var maps = ['tundra', 'desierto', 'bosque', 'biblioteca'];
 var this_Game_Maps = [];
 var enemiesTotal = 0;
 var enemiesAlive = 0;
 var reset = false; //True reseteo ejecutado
+var music_game;
+var first_Game = true;
     var BootScene = {
         preload: function () {
         // load here assets required for the loading screen
@@ -59,7 +61,6 @@ var reset = false; //True reseteo ejecutado
         this.game.load.image('Play', 'images/Titulos-Arte/PLAY.png');
         this.game.load.image('Decoración','images/Titulos-Arte/Decoración.png');
         this.game.load.audio('Menu_Music', 'audio/Skyrim-8-Bit-Theme.ogg');
-        this.game.load.audio('Game_Music', 'audio/14 - Barbarian King.ogg');
         },
     
         create: function () {
@@ -75,7 +76,7 @@ var reset = false; //True reseteo ejecutado
             this.play.input.useHandCursor = true;
             this.play.smoothed = false;
             this.play.scale.set(0.75);
-          //  this.music_menu.play();
+            this.music_menu.loopFull(1);
         }
     } 
     function Play()
@@ -93,6 +94,7 @@ var reset = false; //True reseteo ejecutado
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
         // TODO: load here the assets for the game
+        this.game.load.audio('Game_Music', 'audio/'+ maps[this_Game_Maps[mapa_Actual]] +'.ogg');
         this.game.load.tilemap('map1', 'images/'+ maps[this_Game_Maps[mapa_Actual]] +'.csv', null, Phaser.Tilemap.TILED_CSV);
         this.game.load.image('tileset', 'images/tileset.png');
         this.game.load.spritesheet('snow', 'images/snow.png', 240, 180);
@@ -127,18 +129,21 @@ var reset = false; //True reseteo ejecutado
 
         map.addTilesetImage('tileset');
 
-        map.setCollision([72, 73, 74, 75, 88, 89, 90, 91, 
+        map.setCollision( [72, 73, 74, 75, 88, 89, 90, 91, 
                         177, 178, 209, 210, 229, 194, 192, 
-                        195, 179, 208, 180, 358, 359 , 360,
+                        195, 179, 208, 180, 358, 359, 360,
                         361, 374, 375, 380, 390, 391, 406,
-                        407]);
+                        407, 168, 169, 182, 183, 464, 480,
+                        481, 466, 450, 466, 499, 453, 454,
+                        457, 485, 486, 490, 491, 167, 499,
+                        468, 473, 482, 166] );
 
         layer = map.createLayer(0);
 
-        this.music_game = this.game.add.audio('Game_Music');
-      //  this.music_game.play();
+        music_game = this.game.add.audio('Game_Music');
+        music_game.loopFull(1);
 
-        prota_Texture = this.game.add.sprite( 300 , 500, 'Dovah');
+        prota_Texture = this.game.add.sprite( 300 , 450, 'Dovah');
         prota_Texture.smoothed = false;
         prota_Texture.scale.set(1.25);
         this.game.physics.enable(prota_Texture, Phaser.Physics.ARCADE);
@@ -152,11 +157,13 @@ var reset = false; //True reseteo ejecutado
         this.UP.play('UP');
         this.UP.visible = false;
         this.snow = this.game.add.sprite(0, 0, 'snow');
-        this.snow.visible = false;
+        if(maps[this_Game_Maps[mapa_Actual]] == 'tundra') this.snow.visible = true;
+        else this.snow.visible = false;
         this.snow.scale.set(3.33);
         this.snow.fixedToCamera = true;
         this.snow.animations.add('snowing');
-   //     this.snow.animations.play('snowing', 5, true);
+        console.log(maps[this_Game_Maps[mapa_Actual]]);
+        this.snow.animations.play('snowing', 5, true);
         this.meele_Group = this.game.add.group();
         this.meele_Group.enableBody = true;
         this.meele_Group.physicsBodyType = Phaser.Physics.ARCADE;
@@ -202,7 +209,7 @@ var reset = false; //True reseteo ejecutado
 
         this.thuum_Screen = this.game.add.sprite(0, 0, 'Thu-um_Screen');
         this.thuum_Screen.visible = false;
-        this.thuum_Screen.scale.set(1.05);
+        this.thuum_Screen.scale.y = 1.1;
         this.thuum_Screen.fixedToCamera = true;
         this.thuum_Screen.animations.add('FUSH_RO_DAH', [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21], 7, true);
         thuum_Interface = this.game.add.sprite(320, -60, 'Thu-um_Interface');
@@ -234,74 +241,77 @@ var reset = false; //True reseteo ejecutado
         this.round_Clear = this.game.add.sprite(0, 0, 'RoundClear');
         this.round_Clear.visible = false;
         this.round_Clear.fixedToCamera = true;
-        this.level_UP_Screen = this.game.add.sprite( 0 , 0, 'Level_UP_Screen');
-        this.level_UP_Screen.smoothed = false;
-        this.level_UP_Screen.scale.set(1.335);
-        this.level_UP_Screen.visible = false;
-        this.level_UP_Screen.fixedToCamera = true;
-        this.levels = 6;
-        this.magic_UP = [];
-        for(var i = 0; i < this.levels; i++)
+        if(first_Game)
         {
-            this.magic_UP[i] = this.game.add.sprite( 2, 80*i, 'Magic_Interface');
-            this.magic_UP[i].smoothed = false;
-            this.magic_UP[i].scale.set(8);
-            this.magic_UP[i].fixedToCamera = true;
-            this.magic_UP[i].animations.add('UP_Magic', [9], 5, true);
-            this.magic_UP[i].animations.add('Used', [0], 5, true);
-            this.magic_UP[i].play('UP_Magic');
-            this.magic_UP[i].visible = false;
+            this.level_UP_Screen = this.game.add.sprite( 0 , 0, 'Level_UP_Screen');
+            this.level_UP_Screen.smoothed = false;
+            this.level_UP_Screen.scale.set(1.335);
+            this.level_UP_Screen.visible = false;
+            this.level_UP_Screen.fixedToCamera = true;
+            this.levels = 6;
+            this.magic_UP = [];
+            for(var i = 0; i < this.levels; i++)
+            {
+                this.magic_UP[i] = this.game.add.sprite( 2, 80*i, 'Magic_Interface');
+                this.magic_UP[i].smoothed = false;
+                this.magic_UP[i].scale.set(8);
+                this.magic_UP[i].fixedToCamera = true;
+                this.magic_UP[i].animations.add('UP_Magic', [9], 5, true);
+                this.magic_UP[i].animations.add('Used', [0], 5, true);
+                this.magic_UP[i].play('UP_Magic');
+                this.magic_UP[i].visible = false;
+            }
+            this.magic_UP_Button = this.game.add.button(24, 30, 'Magic_UP_Button', magic_UP_Click, this, 2, 1, 0);
+            this.magic_UP_Button.fixedToCamera = true;
+            this.magic_UP_Button.input.useHandCursor = true;
+            this.magic_UP_Button.smoothed = false;
+            this.magic_UP_Button.scale.set(1.2);
+            this.magic_UP_Button.visible = false;
+            this.thuum_UP = [];
+            for(var i = 0; i < this.levels; i++)
+            {
+                this.thuum_UP[i] = this.game.add.sprite( 272, 80*i, 'Thu-um_Interface');
+                this.thuum_UP[i].smoothed = false;
+                this.thuum_UP[i].scale.set(8);
+                this.thuum_UP[i].fixedToCamera = true;
+                this.thuum_UP[i].animations.add('UP_Thuum', [0], 5, true);
+                this.thuum_UP[i].animations.add('Used', [7], 5, true);
+                this.thuum_UP[i].play('UP_Thuum');
+                this.thuum_UP[i].visible = false;
+            }
+            this.thuum_UP_Button = this.game.add.button(280, 30, 'Thuum_UP_Button', thuum_UP_Click, this, 2, 1, 0);
+            this.thuum_UP_Button.fixedToCamera = true;
+            this.thuum_UP_Button.input.useHandCursor = true;
+            this.thuum_UP_Button.smoothed = false;
+            this.thuum_UP_Button.scale.set(1.2);
+            this.thuum_UP_Button.visible = false;
+            this.melee_UP = [];
+            for(var i = 0; i < this.levels; i++)
+            {
+                this.melee_UP[i] = this.game.add.sprite( 542, 80*i, 'Stamina_Interface');
+                this.melee_UP[i].smoothed = false;
+                this.melee_UP[i].scale.set(8);
+                this.melee_UP[i].fixedToCamera = true;
+                this.melee_UP[i].animations.add('UP_Melee', [9], 5, true);
+                this.melee_UP[i].animations.add('Used', [0], 5, true);
+                this.melee_UP[i].play('UP_Melee');
+                this.melee_UP[i].visible = false;
+            }
+            this.melee_UP_Button = this.game.add.button(562 , 30, 'Melee_UP_Button', melee_UP_Click, this, 2, 1, 0);
+            this.melee_UP_Button.fixedToCamera = true;
+            this.melee_UP_Button.input.useHandCursor = true;
+            this.melee_UP_Button.smoothed = false;
+            this.melee_UP_Button.scale.set(1.2);
+            this.melee_UP_Button.visible = false;
+            this.game.time.advancedTiming = true;
+            first_Game = false;
         }
-        this.magic_UP_Button = this.game.add.button(24, 30, 'Magic_UP_Button', magic_UP_Click, this, 2, 1, 0);
-        this.magic_UP_Button.fixedToCamera = true;
-        this.magic_UP_Button.input.useHandCursor = true;
-        this.magic_UP_Button.smoothed = false;
-        this.magic_UP_Button.scale.set(1.2);
-        this.magic_UP_Button.visible = false;
-        this.thuum_UP = [];
-        for(var i = 0; i < this.levels; i++)
-        {
-            this.thuum_UP[i] = this.game.add.sprite( 272, 80*i, 'Thu-um_Interface');
-            this.thuum_UP[i].smoothed = false;
-            this.thuum_UP[i].scale.set(8);
-            this.thuum_UP[i].fixedToCamera = true;
-            this.thuum_UP[i].animations.add('UP_Thuum', [0], 5, true);
-            this.thuum_UP[i].animations.add('Used', [7], 5, true);
-            this.thuum_UP[i].play('UP_Thuum');
-            this.thuum_UP[i].visible = false;
-        }
-        this.thuum_UP_Button = this.game.add.button(280, 30, 'Thuum_UP_Button', thuum_UP_Click, this, 2, 1, 0);
-        this.thuum_UP_Button.fixedToCamera = true;
-        this.thuum_UP_Button.input.useHandCursor = true;
-        this.thuum_UP_Button.smoothed = false;
-        this.thuum_UP_Button.scale.set(1.2);
-        this.thuum_UP_Button.visible = false;
-        this.melee_UP = [];
-        for(var i = 0; i < this.levels; i++)
-        {
-            this.melee_UP[i] = this.game.add.sprite( 542, 80*i, 'Stamina_Interface');
-            this.melee_UP[i].smoothed = false;
-            this.melee_UP[i].scale.set(8);
-            this.melee_UP[i].fixedToCamera = true;
-            this.melee_UP[i].animations.add('UP_Melee', [9], 5, true);
-            this.melee_UP[i].animations.add('Used', [0], 5, true);
-            this.melee_UP[i].play('UP_Melee');
-            this.melee_UP[i].visible = false;
-        }
-        this.melee_UP_Button = this.game.add.button(562 , 30, 'Melee_UP_Button', melee_UP_Click, this, 2, 1, 0);
-        this.melee_UP_Button.fixedToCamera = true;
-        this.melee_UP_Button.input.useHandCursor = true;
-        this.melee_UP_Button.smoothed = false;
-        this.melee_UP_Button.scale.set(1.2);
-        this.melee_UP_Button.visible = false;
-        this.game.time.advancedTiming = true;
         layer.resizeWorld();
     },
     update: function()
     {
         if(!fin)
         {
-            this.game.debug.text('FPS: ' + this.game.time.fps || 'FPS: --', 40, 40, "#00ff00");
             this.UP.x = prota.dovah.x -40;
             this.UP.y = prota.dovah.y - 10;
             this.game.physics.arcade.collide(prota_Texture, layer);
@@ -312,13 +322,18 @@ var reset = false; //True reseteo ejecutado
             magic_Button.onDown.add(magic, this);
             magic_Interface.animations.add('Use_Magic', [this.m], 5, true);
             magic_Interface.play('Use_Magic');
+            this.game.world.bringToTop(magic_Interface);
             meele_Button.onDown.add(stamina, this);
             stamina_Interface.animations.add('Use_Stamina', [this.s], 5, true);
             stamina_Interface.play('Use_Stamina');
+            this.game.world.bringToTop(stamina_Interface);
             health_Interface.animations.add('Use_Health', [this.h], 5, true);
+            health_Interface.play('Use_Health');
+            this.game.world.bringToTop(health_Interface);
             thuum_Button.onDown.add(thuum, this);
             thuum_Interface.animations.add('Use_thuum', [this.t], 5, true);
             thuum_Interface.play('Use_thuum');
+            this.game.world.bringToTop(thuum_Interface);
             level_UP_Button.onDown.add(level_UP, this);
             prota_Texture.body.velocity.set(0);
             if(cursor.left.isDown) prota.move(3);
@@ -360,6 +375,7 @@ var reset = false; //True reseteo ejecutado
                 this.timer.add(2000, next, this);
                 reset = true;
                 this.round_Clear.visible = true;
+                this.game.world.bringToTop(this.round_Clear);
                 this.timer.start();
                 function next() 
                 { 
@@ -368,6 +384,7 @@ var reset = false; //True reseteo ejecutado
                     this.round_Clear.visible = false;
                     if(ronda_Actual >= ronda.length)
                     {
+                        music_game.stop();
                         ronda_Actual = 0;
                         mapa_Actual++;
                         this.game.state.start('preloader');
@@ -383,7 +400,21 @@ var reset = false; //True reseteo ejecutado
                     }
                 }
                 
-            }// next_Round();
+            }
+            this.game.world.bringToTop(this.snow);
+            if(this.level_UP_Screen.visible)
+            {
+                this.game.world.bringToTop(this.level_UP_Screen);
+                for(var i = 0; i < this.levels; i++)
+                {
+                    this.game.world.bringToTop(this.magic_UP[i]);
+                    this.game.world.bringToTop(this.melee_UP[i]);
+                    this.game.world.bringToTop(this.thuum_UP[i]);
+                }
+                this.game.world.bringToTop(this.magic_UP_Button);
+                this.game.world.bringToTop(this.melee_UP_Button);
+                this.game.world.bringToTop(this.thuum_UP_Button);
+            } 
         }
         else 
         {
@@ -391,15 +422,6 @@ var reset = false; //True reseteo ejecutado
         }
     } 
     };
-    function next_Round()
-    {
-       enemiesTotal = ronda[ronda_Actual];
-       enemiesAlive = ronda[ronda_Actual];
-       for (var i = 0; i < enemiesTotal; i++)
-       {
-            this.enemies[i] = new enemy(i, this.enemy_Texture, this.game);
-       }
-    }
     function stamina ()
     {
         prota.attack_Meele();
@@ -435,18 +457,15 @@ var reset = false; //True reseteo ejecutado
                     for (var i = 0; i < this.enemies.length; i++)
                     {
                        if(!this.enemies[i].fly) this.enemies[i].hit(999, prota);
-                       else this.enemies[i].chains();
+                       else 
+                       {
+                           this.enemies[i].chains();
+                           this.enemies[i].move();
+                       }
                     }
                 }
             }
         }
-    }
-
-    function render() {
-
-        //  FPS debug info
-     //   this.game.debug.text('FPS: ' + this.game.time.fps || 'FPS: --', 40, 40, "#00ff00");
-    
     }
     function level_UP()
     {
@@ -532,7 +551,6 @@ var reset = false; //True reseteo ejecutado
     }
     function meele_Hit ()
     {
-      //  meele.kill();
       this.actual_Enemy.hit(prota.melee_Damage, prota);
     }
     function magic_Hit ()

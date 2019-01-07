@@ -23,7 +23,9 @@ module.exports = class Dovah{
         this.thuum_Level = 0;
         this.game = game;
         this.EXP = 0;
+        this.level = 1;
         this.level_UP = level_UP;
+        this.dovah.body.mass = 300;
 
         this.timer = this.game.time.create(false);
         this.thuum_Recover_Loop = this.game.time.events.loop(1000 * this.thuum_Recover, thuum, this);
@@ -32,6 +34,8 @@ module.exports = class Dovah{
         function magic () { gameManager.Recover_Magic(); }
         this.melee_Recover_Loop = this.game.time.events.loop(1000 * this.melee_Recover, stamina, this);
         function stamina () { gameManager.Recover_Stamine(); }
+        this.life_Recover_Loop = this.game.time.events.loop(3000, life, this);
+        function life () { gameManager.Recover_Life(); }
         this.dovah.animations.add('Left', [6,7], 5, true);
         this.dovah.animations.add('Right', [4,5], 5, true);
         this.dovah.animations.add('Down', [2,3], 5, true);
@@ -43,25 +47,27 @@ module.exports = class Dovah{
     X (){ return this.dovah_X; }
     Y (){ return this.dovah_Y; }
 
+    anchor (){ this.dovah.body.mass = 999; }
+
     move(dir) 
     { //Mover jugador
         switch (dir)
         {
             case 1:
             this.dovah.play('Up');
-            this.dovah.body.velocity.y = -250;
+            this.dovah.body.velocity.y = -250 / (this.game.time.fps/60);
             break;
             case 2:
             this.dovah.play('Down');
-            this.dovah.body.velocity.y = +250;
+            this.dovah.body.velocity.y = +250 / (this.game.time.fps/60);
             break;
             case 3:
             this.dovah.play('Left');
-            this.dovah.body.velocity.x = -250;
+            this.dovah.body.velocity.x = -250 / (this.game.time.fps/60);
             break;
             case 4:
             this.dovah.play('Right');
-            this.dovah.body.velocity.x = +250;
+            this.dovah.body.velocity.x = +250 / (this.game.time.fps/60);
             break;
         }
         this.dovah_dir = dir;
@@ -72,7 +78,7 @@ module.exports = class Dovah{
     attack_Meele()
     {
         this.attack = this.melee.getFirstExists(false);
-        if (this.attack && gameManager.Stamina() > 0)
+        if (this.attack && gameManager.Stamina() - this.melee_Cost > 0)
         {
                 switch (this.dovah_dir)
                 {
@@ -105,7 +111,7 @@ module.exports = class Dovah{
     }
     attack_Magic()
     {
-        if(gameManager.Magic() > 0)
+        if(gameManager.Magic() - this.magic_Cost > 0)
         {
             this.bullet = this.magic.getFirstExists(false);
             if (this.bullet)
@@ -116,7 +122,7 @@ module.exports = class Dovah{
                     case 1:
                 //magic_Create(this.game, (this.dovah.x + 65), this.dovah.y, 180, 0, -300, 2, this.magic);
                     this.bullet.reset(this.dovah.x + 65 , this.dovah.y);
-                    this.bullet.body.velocity.y = -300;
+                    this.bullet.body.velocity.y = -300 / (this.game.time.fps/60);
                     this.bullet.body.velocity.x = 0;
                     this.bullet.scale.x = 2;
                     this.bullet.angle = 180;
@@ -124,7 +130,7 @@ module.exports = class Dovah{
                     case 2:
                     //magic_Create(this.game, (this.dovah.x + 15), (this.dovah.y + 65), 0, 0, 300, 2, this.magic);
                     this.bullet.reset(this.dovah.x  + 15 , this.dovah.y + 65);
-                    this.bullet.body.velocity.y = 300;
+                    this.bullet.body.velocity.y = 300 / (this.game.time.fps/60);
                     this.bullet.body.velocity.x = 0;
                     this.bullet.scale.x = 2;
                     this.bullet.angle = 0;
@@ -133,7 +139,7 @@ module.exports = class Dovah{
                     //magic_Create(this.game, (this.dovah.x + 15), (this.dovah.y + 65), 90, -300, 0, -2, this.magic);
                     this.bullet.reset(this.dovah.x  + 15 , this.dovah.y  + 65);
                     this.bullet.body.velocity.y = 0;
-                    this.bullet.body.velocity.x = -300;
+                    this.bullet.body.velocity.x = -300 / (this.game.time.fps/60);
                     this.bullet.scale.x = -2;
                     this.bullet.angle = 90;
                     break;
@@ -141,7 +147,7 @@ module.exports = class Dovah{
                     //magic_Create(this.game, (this.dovah.x + 65), (this.dovah.y + 65), -90, 300, 0, 2, this.magic);
                     this.bullet.reset(this.dovah.x + 65 , this.dovah.y + 65);
                     this.bullet.body.velocity.y = 0;
-                    this.bullet.body.velocity.x = 300;
+                    this.bullet.body.velocity.x = 300 / (this.game.time.fps/60);
                     this.bullet.scale.x = 2;
                     this.bullet.angle = -90;
                     break;
@@ -156,7 +162,7 @@ module.exports = class Dovah{
         {
                 gameManager.Use_Life(1);
                 this.Talos_Please_Help_Me = true;
-                this.timer.add(500, All_God_Things_Ends, this);
+                this.timer.add(300, All_God_Things_Ends, this);
                 this.timer.start();
             function All_God_Things_Ends() { this.Talos_Please_Help_Me = false; }
         }
@@ -193,12 +199,13 @@ module.exports = class Dovah{
     gain_EXP(Exp)
     {
         this.EXP = this.EXP + Exp;
-        if(this.EXP >= 10)
+        if(this.EXP >= 10 * (this.level/2))
         {
-            console.log('caching!!!');
             this.level_UP.visible = true;
+            this.game.world.bringToTop(this.level_UP);
             this.timer.add(1000, end, this);
             this.timer.start();
+            this.level++;
             function end() 
             {
                 this.level_UP.visible = false;

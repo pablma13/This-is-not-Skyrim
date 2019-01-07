@@ -15,6 +15,7 @@ function Recover_Stamine() { if(stamina < 10) stamina++; }
 
 function Life () { return life; }
 function Use_Life(num) {life = life - num;}
+function Recover_Life() { if(life < 10) life++; }
 
 function Thuum () { return thuum; }
 function Use_Thuum() {thuum = 9;}
@@ -37,4 +38,4 @@ function Restart()
 }
 module.exports = { Life, Use_Life, Stamina, Use_Stamina, Magic,  Use_Magic, 
                    Thuum, Use_Thuum, Recover_Thumm, Recover_Magic, Recover_Stamine, 
-                   Restart, New_Skill, Level_UP, Use_Skill_Point};
+                   Restart, New_Skill, Level_UP, Use_Skill_Point, Recover_Life};

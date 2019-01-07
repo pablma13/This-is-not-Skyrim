@@ -10,10 +10,7 @@ module.exports = class Enemigo{
         this.alive = true;
         this.direction = true; //True = X
         this.timer = this.game.time.create(false);
-        if(x < (800 / 4)) x = x + 200;
-        else if(x > ((800 * 3) / 4)) x = x - 200;
-        if(y < (600 / 4)) y = y + 200;
-        else if(y > ((600 * 3) / 4)) y = y - 200;
+        this.Alduin_Please_Help_Me = false;
         this.enemy = this.game.add.sprite(x, y, 'Dragon');
         this.enemy.visible = false;
         this.game.physics.enable(this.enemy, Phaser.Physics.ARCADE);
@@ -26,7 +23,7 @@ module.exports = class Enemigo{
             this.health = 6;
             this.velocity = 30;
             this.fly = false;
-            this.loot = 3;
+            this.loot = 4;
             break;
             case 8:
             this.enemy.body.setSize(60, 30, 0, 30);
@@ -34,7 +31,7 @@ module.exports = class Enemigo{
             this.health = 2;
             this.velocity = 120;
             this.fly = false;
-            this.loot = 1;
+            this.loot = 2;
             break;
             case 16:
             this.enemy.body.setSize(60, 30, 0, 30);
@@ -42,7 +39,7 @@ module.exports = class Enemigo{
             this.health = 4;
             this.velocity = 50;
             this.fly = false;
-            this.loot = 2;
+            this.loot = 3;
             break;
             case 24:
             this.enemy.body.setSize(60, 60);
@@ -50,7 +47,7 @@ module.exports = class Enemigo{
             this.health = 6;
             this.velocity = 50;
             this.fly = true;
-            this.loot = 3;
+            this.loot = 4;
             break;
             case 32:
             this.enemy.body.setSize(60, 60);
@@ -58,8 +55,26 @@ module.exports = class Enemigo{
             this.health = 2;
             this.velocity = 100;
             this.fly = true;
-            this.loot = 1;
+            this.loot = 2;
             break;
+        }
+        if(!this.fly)
+        {
+            switch (Math.floor((Math.random() * 3)))
+            {
+                case 0:
+                this.enemy.x = 300;
+                this.enemy.y = 450;
+                break;
+                case 1:
+                this.enemy.x = 400;
+                this.enemy.y = 300;
+                break;
+                case 2:
+                this.enemy.x = 500;
+                this.enemy.y = 500;
+                break;
+            }
         }
         this.enemy.animations.add('Left', [6 + dragon_Race, 7 + dragon_Race], 5, true);
         this.enemy.animations.add('Right', [0 + dragon_Race, 1 + dragon_Race], 5, true);
@@ -76,13 +91,20 @@ module.exports = class Enemigo{
     chains() { this.fly = false; }
     hit(num, player) 
     {
-         if(this.health > 0) this.health = this.health - num; 
-         if(this.health <= 0)
-         {
-             player.gain_EXP(this.loot);
-             this.enemy.kill();
-             this.alive = false;
-         }
+        if(!this.Alduin_Please_Help_Me)
+        {
+            if(this.health > 0) this.health = this.health - num; 
+            if(this.health <= 0)
+            {
+                player.gain_EXP(this.loot);
+                this.enemy.kill();
+                this.alive = false;
+            }
+            this.Alduin_Please_Help_Me = true;
+            this.timer.add(500, All_God_Things_Ends, this);
+            this.timer.start();
+            function All_God_Things_Ends() { this.Alduin_Please_Help_Me = false; }
+        }
     }
     update(player)
     {
@@ -91,7 +113,7 @@ module.exports = class Enemigo{
            if(this.direction)
            {
                 this.direction = false;
-                this.timer.add(1000, search, this);
+                this.timer.add(1500, search, this);
                 this.timer.start();
            } 
            function search() 
@@ -104,13 +126,13 @@ module.exports = class Enemigo{
                     {
                         this.enemy.play('Right');
                         this.enemy.body.velocity.y = 0;
-                        this.enemy.body.velocity.x = this.velocity;
+                        this.enemy.body.velocity.x = this.velocity / (this.game.time.fps/60);
                     }
                     else 
                     {
                         this.enemy.play('Left');
                         this.enemy.body.velocity.y = 0;
-                        this.enemy.body.velocity.x = -this.velocity;
+                        this.enemy.body.velocity.x = -this.velocity / (this.game.time.fps/60);
                     }   
                 }
                 else 
@@ -119,13 +141,13 @@ module.exports = class Enemigo{
                     {
                         this.enemy.play('Down');
                         this.enemy.body.velocity.x = 0;
-                        this.enemy.body.velocity.y = this.velocity;
+                        this.enemy.body.velocity.y = this.velocity / (this.game.time.fps/60);
                     }
                     else 
                     {
                         this.enemy.play('Up');
                         this.enemy.body.velocity.x = 0;
-                        this.enemy.body.velocity.y = -this.velocity;
+                        this.enemy.body.velocity.y = -this.velocity / (this.game.time.fps/60);
                     }
                 }
             }
