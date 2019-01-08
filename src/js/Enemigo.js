@@ -1,10 +1,11 @@
 'use strict';
 module.exports = class Enemigo {
-    constructor(index, texture, game) {
+    constructor(index, texture, game, boss) {
         this.stop = false;
         var x = game.world.randomX;
         var y = game.world.randomY;
         var dragon_Race = (Math.floor((Math.random() * 5)) * 8);
+        if(boss) dragon_Race = 40;
         this.game = game;
         this.alive = true;
         this.direction = true; //True = X
@@ -54,6 +55,14 @@ module.exports = class Enemigo {
                 this.velocity = 100;
                 this.fly = true;
                 this.loot = 2;
+                break;
+            case 40:
+                this.enemy.body.setSize(60, 60);
+                this.enemy.scale.set(4);
+                this.health = 1;
+                this.velocity = 120;
+                this.fly = true;
+                this.loot = 999;
                 break;
         }
         if (!this.fly) {
@@ -109,8 +118,8 @@ module.exports = class Enemigo {
             function search() {
                 if (this.alive) this.enemy.visible = true;
                 this.direction = true;
-                if (Math.abs(player.x - this.enemy.x) > Math.abs(player.y - this.enemy.y)) {
-                    if ((player.x - this.enemy.x) > 0) {
+                if (Math.abs(player.dovah.x - this.enemy.x) > Math.abs(player.dovah.y - this.enemy.y)) {
+                    if ((player.dovah.x - this.enemy.x) > 0) {
                         this.enemy.play('Right');
                         this.enemy.body.velocity.y = 0;
                         this.enemy.body.velocity.x = this.velocity / (this.game.time.fps / 60);
@@ -122,7 +131,7 @@ module.exports = class Enemigo {
                     }
                 }
                 else {
-                    if ((player.y - this.enemy.y) > 0) {
+                    if ((player.dovah.y - this.enemy.y) > 0) {
                         this.enemy.play('Down');
                         this.enemy.body.velocity.x = 0;
                         this.enemy.body.velocity.y = this.velocity / (this.game.time.fps / 60);

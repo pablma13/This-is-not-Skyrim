@@ -1,6 +1,5 @@
 'use strict';
 const gameManager = require('./GameManager.js');
-var magic_Create = require('./Proyectil.js');
 var magic_Cast;
 
 module.exports = class Dovah {
@@ -35,6 +34,9 @@ module.exports = class Dovah {
 
     X() { return this.dovah_X; }
     Y() { return this.dovah_Y; }
+
+    inmortal() { this.Talos_Please_Help_Me = true; }
+    mortal() { this.Talos_Please_Help_Me = false; }
 
     anchor() { this.dovah.body.mass = 999; }
 
@@ -101,7 +103,6 @@ module.exports = class Dovah {
                 this.bullet.body.setSize(30, 30, 0, -30);
                 switch (this.dovah_dir) {
                     case 1:
-                        //magic_Create(this.game, (this.dovah.x + 65), this.dovah.y, 180, 0, -300, 2, this.magic);
                         this.bullet.reset(this.dovah.x + 65, this.dovah.y);
                         this.bullet.body.velocity.y = -300 / (this.game.time.fps / 60);
                         this.bullet.body.velocity.x = 0;
@@ -109,7 +110,6 @@ module.exports = class Dovah {
                         this.bullet.angle = 180;
                         break;
                     case 2:
-                        //magic_Create(this.game, (this.dovah.x + 15), (this.dovah.y + 65), 0, 0, 300, 2, this.magic);
                         this.bullet.reset(this.dovah.x + 15, this.dovah.y + 65);
                         this.bullet.body.velocity.y = 300 / (this.game.time.fps / 60);
                         this.bullet.body.velocity.x = 0;
@@ -117,7 +117,6 @@ module.exports = class Dovah {
                         this.bullet.angle = 0;
                         break;
                     case 3:
-                        //magic_Create(this.game, (this.dovah.x + 15), (this.dovah.y + 65), 90, -300, 0, -2, this.magic);
                         this.bullet.reset(this.dovah.x + 15, this.dovah.y + 65);
                         this.bullet.body.velocity.y = 0;
                         this.bullet.body.velocity.x = -300 / (this.game.time.fps / 60);
@@ -125,7 +124,6 @@ module.exports = class Dovah {
                         this.bullet.angle = 90;
                         break;
                     case 4:
-                        //magic_Create(this.game, (this.dovah.x + 65), (this.dovah.y + 65), -90, 300, 0, 2, this.magic);
                         this.bullet.reset(this.dovah.x + 65, this.dovah.y + 65);
                         this.bullet.body.velocity.y = 0;
                         this.bullet.body.velocity.x = 300 / (this.game.time.fps / 60);
