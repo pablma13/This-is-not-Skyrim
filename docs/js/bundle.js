@@ -493,7 +493,7 @@
         var dovah = require('./Protagonista.js');
         var enemy = require('./Enemigo.js');
         var ronda_Actual = 0;
-        var mapa_Actual = 3;
+        var mapa_Actual = 0;
         var ronda;
         var prota;
         var prota_Texture;
