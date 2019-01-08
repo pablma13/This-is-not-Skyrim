@@ -61,7 +61,7 @@
                     case 40:
                         this.enemy.body.setSize(60, 60);
                         this.enemy.scale.set(4);
-                        this.health = 1;
+                        this.health = 120;
                         this.velocity = 120;
                         this.fly = true;
                         this.loot = 999;
@@ -517,7 +517,7 @@
         var enemiesAlive = 0;
         var reset = false; //True reseteo ejecutado
         var music_game;
-        var boss_Battle = true;
+        var boss_Battle = false;
         var wait_load = true;
         var BootScene = {
             preload: function () {
