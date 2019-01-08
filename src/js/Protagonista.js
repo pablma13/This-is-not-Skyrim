@@ -4,7 +4,7 @@ var magic_Create = require('./Proyectil.js');
 var magic_Cast;
 
 module.exports = class Dovah {
-    constructor(texture_Dova, group_Melee, group_Magic, game, level_UP) {
+    constructor(texture_Dova, group_Melee, group_Magic, game, level_UP, level_UP_Sound) {
         this.dovah_dir = 1;
         this.Talos_Please_Help_Me = false;
         this.dovah = texture_Dova;
@@ -13,6 +13,7 @@ module.exports = class Dovah {
 
         this.game = game;
         this.level_UP = level_UP;
+        this.level_UP_Sound = level_UP_Sound;
         this.dovah.body.mass = 300;
 
         this.timer = this.game.time.create(false);
@@ -167,6 +168,7 @@ module.exports = class Dovah {
     gain_EXP(Exp) {
         if (gameManager.EXP_UP(Exp)) {
             this.level_UP.visible = true;
+            this.level_UP_Sound.play();
             this.game.world.bringToTop(this.level_UP);
             this.timer.add(1000, end, this);
             this.timer.start();

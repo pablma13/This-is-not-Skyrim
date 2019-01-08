@@ -95,6 +95,9 @@ var PreloaderScene = {
 
         // TODO: load here the assets for the game
         this.game.load.audio('Game_Music', 'audio/' + maps[this_Game_Maps[mapa_Actual]] + '.ogg');
+        this.game.load.audio('levelUP_Audio', 'audio/level_UP.ogg');
+        this.game.load.audio('Fire_Audio', 'audio/fire.ogg');
+        this.game.load.audio('Melee_Audio', 'audio/sword.ogg');
         this.game.load.audio('GameOver_Music', 'audio/GameOver.ogg');
         this.game.load.tilemap('map1', 'images/' + maps[this_Game_Maps[mapa_Actual]] + '.csv', null, Phaser.Tilemap.TILED_CSV);
         this.game.load.image('tileset', 'images/tileset.png');
@@ -177,6 +180,7 @@ var PlayScene = {
         }
         this.meele_Group.callAll('animations.add', 'animations', 'attack', [1, 2, 3, 4, 5], 7, true);
         this.meele_Group.callAll('animations.play', 'animations', 'attack');
+        this.melee_Sound = this.game.add.audio('Melee_Audio');
 
         this.magic_Group = this.game.add.group();
         this.magic_Group.enableBody = true;
@@ -193,8 +197,10 @@ var PlayScene = {
         }
         this.magic_Group.callAll('animations.add', 'animations', 'bullet', [0, 1, 2, 3, 4, 5], 5, true);
         this.magic_Group.callAll('animations.play', 'animations', 'bullet');
+        this.magic_Sound = this.game.add.audio('Fire_Audio');
 
-        prota = new dovah(prota_Texture, this.meele_Group, this.magic_Group, this.game, this.UP);
+        this.level_UP_sound = this.game.add.audio('levelUP_Audio');
+        prota = new dovah(prota_Texture, this.meele_Group, this.magic_Group, this.game, this.UP, this.level_UP_sound);
         this.game.camera.follow(prota_Texture);
 
         this.enemies = [];
@@ -412,10 +418,12 @@ var PlayScene = {
     }
 };
 function stamina() {
+    this.melee_Sound.play();
     prota.attack_Meele();
 }
 
 function magic() {
+    this.magic_Sound.play();
     prota.attack_Magic();
 }
 function thuum() {
