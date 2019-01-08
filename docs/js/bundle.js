@@ -158,7 +158,7 @@
         var stamina = 10;
         var life = 10;
         var thuum = 9;
-        var skill_Points = 18;
+        var skill_Points = 0;
         var magic_Damage = 1;
         var magic_Cost = 4;
         var magic_Level = 0;
