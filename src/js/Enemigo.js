@@ -5,7 +5,7 @@ module.exports = class Enemigo {
         var x = game.world.randomX;
         var y = game.world.randomY;
         var dragon_Race = (Math.floor((Math.random() * 5)) * 8);
-        if(boss) dragon_Race = 40;
+        if (boss) dragon_Race = 40;
         this.game = game;
         this.alive = true;
         this.direction = true; //True = X

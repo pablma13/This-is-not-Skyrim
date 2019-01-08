@@ -96,7 +96,7 @@ var PreloaderScene = {
                 if (i - z < 0) same_Number = false;
             }
         }
-        if(!boss_Battle)this.game.load.audio('Game_Music', 'audio/' + maps[this_Game_Maps[mapa_Actual]] + '.ogg');
+        if (!boss_Battle) this.game.load.audio('Game_Music', 'audio/' + maps[this_Game_Maps[mapa_Actual]] + '.ogg');
         else this.game.load.audio('Game_Music', 'audio/final.ogg');
         this.game.load.audio('Win_Music', 'audio/win.ogg');
         this.game.load.audio('levelUP_Audio', 'audio/level_UP.ogg');
@@ -104,7 +104,7 @@ var PreloaderScene = {
         this.game.load.audio('Fire_Audio', 'audio/fire.ogg');
         this.game.load.audio('Melee_Audio', 'audio/sword.ogg');
         this.game.load.audio('GameOver_Music', 'audio/GameOver.ogg');
-        if(boss_Battle)this.game.load.tilemap('Map', 'images/final.csv', null, Phaser.Tilemap.TILED_CSV);
+        if (boss_Battle) this.game.load.tilemap('Map', 'images/final.csv', null, Phaser.Tilemap.TILED_CSV);
         else this.game.load.tilemap('Map', 'images/' + maps[this_Game_Maps[mapa_Actual]] + '.csv', null, Phaser.Tilemap.TILED_CSV);
         this.game.load.image('tileset', 'images/tileset.png');
         this.game.load.image('Win', 'images/Titulos-Arte/Win.png');
@@ -143,24 +143,24 @@ var PlayScene = {
 
         map.setCollision(
             [72, 73, 74, 75, 88, 89, 90, 91,
-            177, 178, 209, 210, 229, 194, 192,
-            195, 179, 208, 180, 358, 359, 360,
-            361, 374, 375, 380, 390, 391, 406,
-            407, 168, 169, 182, 183, 464, 480,
-            481, 466, 450, 466, 499, 453, 454,
-            457, 485, 486, 490, 491, 167, 499,
-            468, 473, 482, 166, 615, 616, 599,
-            600, 583, 602, 584, 618, 960, 961,
-            976, 992, 993, 964, 983, 977, 995,
-            996, 978, 979, 1027, 962, 963, 980,
-            1028, 1011, 1012, 1049, 1050]);
+                177, 178, 209, 210, 229, 194, 192,
+                195, 179, 208, 180, 358, 359, 360,
+                361, 374, 375, 380, 390, 391, 406,
+                407, 168, 169, 182, 183, 464, 480,
+                481, 466, 450, 466, 499, 453, 454,
+                457, 485, 486, 490, 491, 167, 499,
+                468, 473, 482, 166, 615, 616, 599,
+                600, 583, 602, 584, 618, 960, 961,
+                976, 992, 993, 964, 983, 977, 995,
+                996, 978, 979, 1027, 962, 963, 980,
+                1028, 1011, 1012, 1049, 1050]);
 
         layer = map.createLayer(0);
 
         music_game = this.game.add.audio('Game_Music');
         music_game.loopFull(1);
 
-        if(boss_Battle) prota_Texture = this.game.add.sprite(1350, 2200, 'Dovah');
+        if (boss_Battle) prota_Texture = this.game.add.sprite(1350, 2200, 'Dovah');
         else prota_Texture = this.game.add.sprite(350, 500, 'Dovah');
         prota_Texture.smoothed = false;
         prota_Texture.scale.set(1.25);
@@ -218,11 +218,11 @@ var PlayScene = {
         this.game.camera.follow(prota_Texture);
 
         this.enemies = [];
-        if(boss_Battle) enemiesTotal = 1;
+        if (boss_Battle) enemiesTotal = 1;
         else enemiesTotal = ronda[ronda_Actual];
         enemiesAlive = ronda[ronda_Actual];
         for (var i = 0; i < enemiesTotal; i++) {
-            if(boss_Battle) this.enemies[i] = new enemy(i, this.enemy_Texture, this.game, true);
+            if (boss_Battle) this.enemies[i] = new enemy(i, this.enemy_Texture, this.game, true);
             else this.enemies[i] = new enemy(i, this.enemy_Texture, this.game, false);
         }
         this.win = this.game.add.sprite(0, 0, 'Win');
@@ -339,8 +339,7 @@ var PlayScene = {
         layer.resizeWorld();
     },
     update: function () {
-        if(!wait_load)
-        {
+        if (!wait_load) {
             if (!fin) {
                 this.UP.x = prota.dovah.x - 40;
                 this.UP.y = prota.dovah.y - 10;
@@ -380,7 +379,7 @@ var PlayScene = {
                             for (var o = i + 1; o < this.enemies.length; o++) {
                                 this.game.physics.arcade.collide(this.enemies[i].enemy, this.enemies[o].enemy);
                                 this.game.physics.arcade.collide(this.enemies[o].enemy, this.enemies[i].enemy);
-                            }   
+                            }
                         }
                         enemiesAlive++;
                         if ((Math.abs(prota.dovah.x - this.enemies[i].enemy.x) < 50) && (Math.abs(prota.dovah.y - this.enemies[i].enemy.y) < 50)) {
@@ -407,27 +406,25 @@ var PlayScene = {
                         this.round_Clear.visible = false;
                         if (ronda_Actual >= ronda.length && !boss_Battle) {
 
-                                music_game.stop();
-                                ronda_Actual = 0;
-                                mapa_Actual++;
-                                if(mapa_Actual > maps.length)
-                                {
-                                    boss_Battle = true;
-                                    mapa_Actual = 0;
-                                } 
-                                this.game.state.start('preloader');
-                            
+                            music_game.stop();
+                            ronda_Actual = 0;
+                            mapa_Actual++;
+                            if (mapa_Actual > maps.length) {
+                                boss_Battle = true;
+                                mapa_Actual = 0;
+                            }
+                            this.game.state.start('preloader');
+
 
                         }
-                        else if(!boss_Battle) {
+                        else if (!boss_Battle) {
                             enemiesTotal = ronda[ronda_Actual];
                             enemiesAlive = ronda[ronda_Actual];
                             for (var i = 0; i < enemiesTotal; i++) {
                                 this.enemies[i] = new enemy(i, this.enemy_Texture, this.game);
                             }
                         }
-                        if(boss_Battle)
-                        {
+                        if (boss_Battle) {
                             this.win.visible = true;
                             music_game.stop();
                             this.win_Music = this.game.add.audio('Win_Music');
@@ -436,7 +433,7 @@ var PlayScene = {
                             fin = true;
                         }
                     }
-    
+
                 }
                 this.game.world.bringToTop(this.snow);
                 if (this.level_UP_Screen.visible) {
@@ -457,8 +454,7 @@ var PlayScene = {
                 restart_Button.onDown.add(restart, this);
             }
         }
-        else
-        {
+        else {
             this.timer.add(1500, play, this);
             this.timer.start();
             function play() { wait_load = false; }
@@ -466,12 +462,12 @@ var PlayScene = {
     }
 };
 function stamina() {
-    if((gameManager.give_Me('stamina') - gameManager.give_Me('melee_Cost')) > 0)this.melee_Sound.play();
+    if ((gameManager.give_Me('stamina') - gameManager.give_Me('melee_Cost')) > 0) this.melee_Sound.play();
     prota.attack_Meele();
 }
 
 function magic() {
-    if((gameManager.give_Me('magic') - gameManager.give_Me('magic_Cost')) > 0)this.magic_Sound.play();
+    if ((gameManager.give_Me('magic') - gameManager.give_Me('magic_Cost')) > 0) this.magic_Sound.play();
     prota.attack_Magic();
 }
 function thuum() {
@@ -580,8 +576,8 @@ function magic_Hit() {
 }
 function restart() {
     fin = false;
-    if(this.music_gameover != undefined)this.music_gameover.stop();
-    if(this.win_Music != undefined)this.win_Music.stop();
+    if (this.music_gameover != undefined) this.music_gameover.stop();
+    if (this.win_Music != undefined) this.win_Music.stop();
     gameManager.Restart();
     ronda_Actual = 0;
     mapa_Actual = 0;
