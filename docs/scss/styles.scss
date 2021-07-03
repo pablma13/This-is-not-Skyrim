@@ -1,0 +1,21 @@
+/*
+            -PATRON DE COLORES-
+*/
+$principal: #00ffea;
+
+/*
+    -MODIFICANDO LAS VARIABLES DE BOOTSTRAP-
+*/
+$accordion-button-icon: url("/images/nothing.png");
+$accordion-button-active-icon: url("/images/nothing.png");
+$accordion-padding-y:                     .1rem;
+$accordion-color: #ffffff00;
+$accordion-border-radius: 0px;
+/*
+    -EXTRAS-
+*/
+@font-face {
+    font-family: 'PixelArt';
+    src: url('../images/Minecraft.ttf');
+}
+@import "../libs/bootstrap/scss/bootstrap";
