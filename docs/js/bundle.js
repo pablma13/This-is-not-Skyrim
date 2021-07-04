@@ -827,7 +827,7 @@
             },
             update: function () {
                 if (!wait_load) {
-                    if (!fin) {
+                    if (!fin && this.game.time.fps > 0) {
                         this.UP.x = prota.dovah.x - 40;
                         this.UP.y = prota.dovah.y - 10;
                         this.game.physics.arcade.collide(prota_Texture, layer);
@@ -935,7 +935,7 @@
                             this.game.world.bringToTop(this.thuum_UP_Button);
                         }
                     }
-                    else {
+                    else if (fin) {
                         this.game.world.bringToTop(this.GameOver);
                         this.game.world.bringToTop(this.win);
                         restart_Button.onDown.add(restart, this);
