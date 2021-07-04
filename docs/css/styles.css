@@ -9,13 +9,8 @@
 */
 @font-face {
   font-family: 'PixelArt';
-  src: url("../images/Titulos-Arte/pixelArt.ttf");
+  src: url("../images/Minecraft.ttf");
 }
-
-main {
-  text-align: center;
-}
-
 
 /*!
  * Bootstrap v5.0.2 (https://getbootstrap.com/)
